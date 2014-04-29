@@ -959,13 +959,13 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * To let client customize month title textview
+	 * …Ë÷√
 	 */
-	public TextView getMonthTitleTextView() {
+	public TextView getTitleTextView() {
 		return tvTitle;
 	}
 
-	public void setMonthTitleTextView(TextView titleView) {
+	public void setTitleTextView(TextView titleView) {
 		this.tvTitle = titleView;
 	}
 
