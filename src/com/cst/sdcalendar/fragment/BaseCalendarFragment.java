@@ -32,7 +32,7 @@ import android.widget.TextView;
 import com.cst.sdcalendar.R;
 import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
 import com.cst.sdcalendar.adapter.ColumnTitleAdapter;
-import com.cst.sdcalendar.calendar.CalendarListener;
+import com.cst.sdcalendar.calendar.OnCalendarChangeListener;
 import com.cst.sdcalendar.util.CalendarHelper;
 import com.cst.sdcalendar.viewpager.ContentPagerAdapter;
 import com.cst.sdcalendar.viewpager.InfinitePagerAdapter;
@@ -45,8 +45,8 @@ import com.cst.sdcalendar.viewpager.InfiniteViewPager;
 @SuppressLint("DefaultLocale")
 public abstract class BaseCalendarFragment extends DialogFragment {
 	public String TAG = "BaseCalendarFragment";
-	
-	//default date format
+
+	// default date format
 	public static final String DATE_FORMAT_DEFAULT = "yyyy-MM-dd";
 
 	/**
@@ -151,7 +151,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	private OnItemLongClickListener dateItemLongClickListener;
 
 	// 自定义事件处理
-	private CalendarListener caldroidListener;
+	private OnCalendarChangeListener caldroidListener;
 
 	/**
 	 * 用于子类定制显示，创建一个adapter
@@ -231,7 +231,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			show(manager, dialogTag);
 		}
 	}
-	
+
 	/**
 	 * 从state中指定的key恢复
 	 * 
@@ -306,7 +306,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		// 标题
 		gvContentTitle = (GridView) view.findViewById(R.id.gvColumnTitle);
 		ColumnTitleAdapter columnTitleAdapter = getColumnTitleAdapter();
-		if(columnTitleAdapter != null){
+		if (columnTitleAdapter != null) {
 			gvContentTitle.setAdapter(columnTitleAdapter);
 		} else {
 			gvContentTitle.setVisibility(View.GONE);
@@ -325,10 +325,10 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 		return view;
 	}
-	
+
 	/**
-	 *  得到列标题
-	 *  如果返回null，则不显示标题
+	 * 得到列标题
+	 * 如果返回null，则不显示标题
 	 * @return
 	 */
 	public abstract ColumnTitleAdapter getColumnTitleAdapter();
@@ -343,9 +343,9 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			week = args.getInt(WEEK, -1);
 			month = args.getInt(MONTH, -1);
 			year = args.getInt(YEAR, -1);
-			//title of dialog
+			// title of dialog
 			dialogTitle = args.getString(DIALOG_TITLE);
-			
+
 			Dialog dialog = getDialog();
 			if (dialog != null) {
 				if (dialogTitle != null) {
@@ -413,8 +413,8 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	 * 
 	 * @param bundle
 	 */
-	public void retrieveChildInitialArgs(Bundle bundle) {}
-
+	public void retrieveChildInitialArgs(Bundle bundle) {
+	}
 
 	/**
 	 * 设置4页包含日期的gridview，这些页面可以被回收
@@ -462,13 +462,13 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		// 是否允许滑动
 		vpContent.setEnabled(enableSwipe);
 
-		//set dates in list, useful for calculate height of content
+		// set dates in list, useful for calculate height of content
 		vpContent.setDatetimeList(datetimeList);
 
 		setupChildDateGridPages(vpContent);
-		
-		//内容
-		final ContentPagerAdapter pagerAdapter = new ContentPagerAdapter(getChildFragmentManager());
+
+		// 内容
+		final ContentPagerAdapter pagerAdapter = new ContentPagerAdapter(getFragmentManager());
 
 		// 在view绘制之前，给fragment设置初始数据
 		fragments = pagerAdapter.getFragments();
@@ -478,7 +478,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			dateGridFragment.setGridAdapter(adapter);
 			dateGridFragment.setOnItemClickListener(getDateItemClickListener());
 			dateGridFragment.setOnItemLongClickListener(getDateItemLongClickListener());
-			//子类的dateGridAdapter
+			// 子类的dateGridAdapter
 			setupChildDateGridFragment(dateGridFragment);
 		}
 
@@ -491,7 +491,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		// 设置 pageChangeListener
 		vpContent.setOnPageChangeListener(pageChangeListener);
 	}
-	
+
 	/**
 	 * 得到当前日期
 	 * 
@@ -512,26 +512,28 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	 */
 	public void setupChildDateGridPages(InfiniteViewPager vpContent) {
 	}
-	
+
 	/**
 	 * 设置子类的date grid fragment
 	 */
-	public void setupChildDateGridFragment(DateGridFragment dateGridFragment){}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-
-		try {
-			Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-			childFragmentManager.setAccessible(true);
-			childFragmentManager.set(this, null);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
+	public void setupChildDateGridFragment(DateGridFragment dateGridFragment) {
 	}
+
+	/*
+	 * @Override
+	 * public void onDetach() {
+	 * super.onDetach();
+	 * try {
+	 * Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+	 * childFragmentManager.setAccessible(true);
+	 * childFragmentManager.set(this, null);
+	 * } catch (NoSuchFieldException e) {
+	 * throw new RuntimeException(e);
+	 * } catch (IllegalAccessException e) {
+	 * throw new RuntimeException(e);
+	 * }
+	 * }
+	 */
 
 	// ------------------------封装方法----------------------------
 	/**
@@ -575,14 +577,14 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	 * @param dateTime
 	 */
 	public void setCalendarDateTime(DateTime dateTime) {
-		month = dateTime.getMonth();
 		year = dateTime.getYear();
-		week = dateTime.getWeekDay();
+		month = dateTime.getMonth();
+		week = dateTime.getWeekDay();// 周几，1-7，7为周六
 		day = dateTime.getDay();
 
 		// Notify listener
 		if (caldroidListener != null) {
-			caldroidListener.onChangeDateTime(month, year, week, day);
+			caldroidListener.onChangeDateTime(year, month, week, day);
 		}
 
 		refreshView();
@@ -618,15 +620,17 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	 */
 	public void moveToDateTime(DateTime datetime) {
 		DateTime currentDateTime = buildCurrentDateTime();
+		
+		if(datetime.getYear() == year && datetime.getMonth() == month && datetime.getDay() == day){
+			return;
+		}
+		
 		DateTime fistDateTime = getFirstDateTime(currentDateTime);
 		DateTime lastDateTime = getLastDateTime(currentDateTime);
 
-		DateTime newFirstDateTime = getFirstDateTime(datetime);
-		DateTime newLastDateTime = getLastDateTime(datetime);
-
 		// 当目标时间小于第一个时间，向左滑动
 		if (datetime.lt(fistDateTime)) {
-
+			DateTime newFirstDateTime = buildDateTime(datetime, 1);
 			// 刷新adapters
 			pageChangeListener.setCurrentDateTime(newFirstDateTime);
 			int currentItem = vpContent.getCurrentItem();
@@ -635,6 +639,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			// 向左滑动
 			vpContent.setCurrentItem(currentItem - 1);
 		} else if (datetime.gt(lastDateTime)) {// 目标时间大于最后一个时间，向右滑动，时间增加
+			DateTime newLastDateTime = buildDateTime(datetime, -1);
 			// 刷新adapters
 			pageChangeListener.setCurrentDateTime(newLastDateTime);
 			int currentItem = vpContent.getCurrentItem();
@@ -1100,7 +1105,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 		selectedDates.add(toDateTime);
 	}
-	
+
 	/**
 	 * 清空选中的时间，需要调用refreshView来刷新视图
 	 */
@@ -1115,7 +1120,6 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		int currentPage = vpContent.getCurrentItem();
 		return pageChangeListener.getCurrent(currentPage);
 	}
-
 
 	/**
 	 * 选中时间，格式yyyy-MM-dd
@@ -1132,11 +1136,11 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	// -------------------------getters and setters-----------------------
-	public void setCaldroidListener(CalendarListener caldroidListener) {
+	public void setCaldroidListener(OnCalendarChangeListener caldroidListener) {
 		this.caldroidListener = caldroidListener;
 	}
-	
-	public CalendarListener getCaldroidListener() {
+
+	public OnCalendarChangeListener getCaldroidListener() {
 		return caldroidListener;
 	}
 
@@ -1253,6 +1257,17 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	public void setExtraData(HashMap<String, Object> extraData) {
 		this.extraData = extraData;
 	}
-	
-	
+
+	public int getYear() {
+		return year;
+	}
+
+	public int getMonth() {
+		return month;
+	}
+
+	public int getDay() {
+		return day;
+	}
+
 }

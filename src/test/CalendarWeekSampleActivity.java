@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.sdcalendar.R;
-import com.cst.sdcalendar.calendar.CalendarListener;
+import com.cst.sdcalendar.calendar.OnCalendarChangeListener;
 import com.cst.sdcalendar.fragment.BaseCalendarFragment;
 import com.cst.sdcalendar.fragment.DayFragment;
 import com.cst.sdcalendar.fragment.MonthFragment;
@@ -86,7 +86,7 @@ public class CalendarWeekSampleActivity extends FragmentActivity {
 		t.commit();
 
 		// Setup listener
-		final CalendarListener listener = new CalendarListener() {
+		final OnCalendarChangeListener listener = new OnCalendarChangeListener() {
 
 			@Override
 			public void onSelectDate(Date date, View view) {

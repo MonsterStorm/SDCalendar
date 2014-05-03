@@ -14,40 +14,31 @@ import android.view.View;
  * @author thomasdao
  * 
  */
-public abstract class CalendarListener {
+public interface OnCalendarChangeListener {
 	/**
 	 * Inform client user has clicked on a date
 	 * @param date
 	 * @param view
 	 */
-	public abstract void onSelectDate(Date date, View view);
+	public void onSelectDate(Date date, View view);
 
-	
 	/**
 	 * Inform client user has long clicked on a date
 	 * @param date
 	 * @param view
 	 */
-	public void onLongClickDate(Date date, View view) {
-		// Do nothing
-	}
+	public void onLongClickDate(Date date, View view);
 
-	
 	/**
 	 * change datetime
 	 * @param month
 	 * @param year
 	 */
-	public void onChangeDateTime(int year, int month, int week, int day) {
-		// Do nothing
-	};
+	public void onChangeDateTime(int year, int month, int week, int day);
 
-	
 	/**
 	 * Inform client that CaldroidFragment view has been created and views are
 	 * no longer null. Useful for customization of button and text views
 	 */
-	public void onCaldroidViewCreated() {
-		// Do nothing
-	}
+	public void onCaldroidViewCreated();
 }
