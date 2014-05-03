@@ -10,22 +10,16 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Convenient helper to work with date, JODA DateTime and String
- * 
- * @author thomasdao
- * 
+ * Helper类，用于Date，JODA DateTime和String之间转化
  */
 public class CalendarHelper {
 
-	public static SimpleDateFormat yyyyMMddFormat = new SimpleDateFormat(
-			"yyyy-MM-dd", Locale.ENGLISH);
+	public static SimpleDateFormat yyyyMMddFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
-	public static SimpleDateFormat MMMFormat = new SimpleDateFormat(
-			"MMM", Locale.getDefault());
+	public static SimpleDateFormat MMMFormat = new SimpleDateFormat("MMM", Locale.getDefault());
 
 	/**
-	 * Retrieve all the dates for a given calendar month Include previous month,
-	 * current month and next month.
+	 * 给定日期，返回该日期排满月视图日期，包含前一个月，当前月，下一个月的日期
 	 * 
 	 * @param month
 	 * @param year
@@ -33,13 +27,11 @@ public class CalendarHelper {
 	 *            : calendar can start from customized date instead of Sunday
 	 * @return
 	 */
-	public static ArrayList<DateTime> getFullWeeks(int month, int year,
-			int startDayOfWeek, boolean sixWeeksInCalendar) {
+	public static ArrayList<DateTime> getFullWeeksForMonthView(int month, int year, int startDayOfWeek, boolean sixWeeksInCalendar) {
 		ArrayList<DateTime> datetimeList = new ArrayList<DateTime>();
 
 		DateTime firstDateOfMonth = new DateTime(year, month, 1, 0, 0, 0, 0);
-		DateTime lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth
-				.getNumDaysInMonth() - 1);
+		DateTime lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.getNumDaysInMonth() - 1);
 
 		// Add dates of first week from previous month
 		int weekdayOfFirstDate = firstDateOfMonth.getWeekDay();
@@ -52,8 +44,7 @@ public class CalendarHelper {
 		}
 
 		while (weekdayOfFirstDate > 0) {
-			DateTime dateTime = firstDateOfMonth.minusDays(weekdayOfFirstDate
-					- startDayOfWeek);
+			DateTime dateTime = firstDateOfMonth.minusDays(weekdayOfFirstDate - startDayOfWeek);
 			if (!dateTime.lt(firstDateOfMonth)) {
 				break;
 			}
@@ -102,7 +93,7 @@ public class CalendarHelper {
 	}
 
 	/**
-	 * Get the DateTime from Date, with hour and min is 0
+	 * Date转DateTime，精确到天
 	 * 
 	 * @param date
 	 * @return
@@ -121,6 +112,12 @@ public class CalendarHelper {
 		return new DateTime(year, javaMonth + 1, day, 0, 0, 0, 0);
 	}
 
+	/**
+	 * DateTime转Date
+	 * 
+	 * @param dateTime
+	 * @return
+	 */
 	public static Date convertDateTimeToDate(DateTime dateTime) {
 		int year = dateTime.getYear();
 		int datetimeMonth = dateTime.getMonth();
@@ -136,15 +133,14 @@ public class CalendarHelper {
 	}
 
 	/**
-	 * Get the Date from String with custom format. Default format is yyyy-MM-dd
+	 * String转Date，默认日期格式yyyy-MM-dd
 	 * 
 	 * @param dateString
 	 * @param dateFormat
 	 * @return
 	 * @throws ParseException
 	 */
-	public static Date getDateFromString(String dateString, String dateFormat)
-			throws ParseException {
+	public static Date getDateFromString(String dateString, String dateFormat) throws ParseException {
 		SimpleDateFormat formatter;
 		if (dateFormat == null) {
 			formatter = yyyyMMddFormat;
@@ -156,15 +152,13 @@ public class CalendarHelper {
 	}
 
 	/**
-	 * Get the DateTime from String with custom format. Default format is
-	 * yyyy-MM-dd
+	 * String转DateTime,默认格式 yyyy-MM-dd
 	 * 
 	 * @param dateString
 	 * @param dateFormat
 	 * @return
 	 */
-	public static DateTime getDateTimeFromString(String dateString,
-			String dateFormat) {
+	public static DateTime getDateTimeFromString(String dateString, String dateFormat) {
 		Date date;
 		try {
 			date = getDateFromString(dateString, dateFormat);
@@ -176,8 +170,13 @@ public class CalendarHelper {
 		return null;
 	}
 
-	public static ArrayList<String> convertToStringList(
-			ArrayList<DateTime> dateTimes) {
+	/**
+	 * DateTime列表转字符串列表
+	 * 
+	 * @param dateTimes
+	 * @return
+	 */
+	public static ArrayList<String> convertToStringList(ArrayList<DateTime> dateTimes) {
 		ArrayList<String> list = new ArrayList<String>();
 		for (DateTime dateTime : dateTimes) {
 			list.add(dateTime.format("YYYY-MM-DD"));

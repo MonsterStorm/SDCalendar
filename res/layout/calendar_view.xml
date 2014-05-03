@@ -46,7 +46,7 @@
     </GridView>
 
     <com.cst.sdcalendar.viewpager.InfiniteViewPager
-        android:id="@+id/months_infinite_pager"
+        android:id="@+id/vpContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-10dp" />

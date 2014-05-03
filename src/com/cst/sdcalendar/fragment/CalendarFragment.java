@@ -1107,7 +1107,7 @@ public class CalendarFragment extends DialogFragment {
 		setShowNavigationArrows(showNavigationArrows);
 
 		// For the weekday gridview ("SUN, MON, TUE, WED, THU, FRI, SAT")
-		weekdayGridView = (GridView) view.findViewById(R.id.weekday_gridview);
+		weekdayGridView = (GridView) view.findViewById(R.id.gvContentTitle);
 		ColumnTitleAdapter weekdaysAdapter = new ColumnTitleAdapter(
 				getActivity(), android.R.layout.simple_list_item_1,
 				getDaysOfWeek());
@@ -1182,7 +1182,7 @@ public class CalendarFragment extends DialogFragment {
 		// InfinitePagerAdapter is responsible
 		// for reuse the fragments
 		dateViewPager = (InfiniteViewPager) view
-				.findViewById(R.id.months_infinite_pager);
+				.findViewById(R.id.vpContent);
 
 		// Set enable swipe
 		dateViewPager.setEnabled(enableSwipe);

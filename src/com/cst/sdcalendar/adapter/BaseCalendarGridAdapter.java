@@ -133,6 +133,11 @@ public abstract class BaseCalendarGridAdapter extends BaseAdapter {
 	 * 子类处理参数初始化
 	 */
 	public abstract void populateChildFromCaldroidData();
+	
+	/**
+	 * 设置adapter的时间
+	 */
+	public abstract void setAdapterDateTime(DateTime datetime);
 
 	// ---------------------getters and setters-----------------------
 	public void setCaldroidData(HashMap<String, Object> caldroidData) {

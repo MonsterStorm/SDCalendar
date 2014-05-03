@@ -43,7 +43,7 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 	public void populateChildFromCaldroidData() {
 		startDayOfWeek = (Integer) caldroidData.get(CalendarFragment.START_DAY_OF_WEEK);
 		sixWeeksInCalendar = (Boolean) caldroidData.get(CalendarFragment.SIX_WEEKS_IN_CALENDAR);
-		this.datetimeList = CalendarHelper.getFullWeeks(this.month, this.year, startDayOfWeek, sixWeeksInCalendar);
+		this.datetimeList = CalendarHelper.getFullWeeksForMonthView(this.month, this.year, startDayOfWeek, sixWeeksInCalendar);
 	}
 	
 
@@ -131,7 +131,7 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 	public void setAdapterDateTime(DateTime dateTime) {
 		this.month = dateTime.getMonth();
 		this.year = dateTime.getYear();
-		this.datetimeList = CalendarHelper.getFullWeeks(this.month, this.year, startDayOfWeek, sixWeeksInCalendar);
+		this.datetimeList = CalendarHelper.getFullWeeksForMonthView(this.month, this.year, startDayOfWeek, sixWeeksInCalendar);
 	}
 
 	protected DateTime getToday() {

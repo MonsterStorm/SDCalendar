@@ -4,12 +4,10 @@ import hirondelle.date4j.DateTime;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
@@ -20,8 +18,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,7 +32,6 @@ import android.widget.TextView;
 
 import com.cst.sdcalendar.R;
 import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
-import com.cst.sdcalendar.adapter.MonthCalendarGridAdapter;
 import com.cst.sdcalendar.adapter.ColumnTitleAdapter;
 import com.cst.sdcalendar.adapter.ContentPagerAdapter;
 import com.cst.sdcalendar.calendar.CalendarListener;
@@ -103,7 +98,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	public final static String SELECTED_DATES = "selectedDates";// 选中日期
 	public final static String MIN_DATE = "minDate";// 最小日期
 	public final static String MAX_DATE = "maxDate";// 最大日期
-	//效果参数
+	// 效果参数
 	public final static String SHOW_NAVIGATION_ARROWS = "showNavigationArrows";// 是否显示箭头
 	public final static String ENABLE_SWIPE = "enableSwipe";// 是否允许滑动
 	public final static String ENABLE_CLICK_ON_DISABLED_DATES = "enableClickOnDisabledDates";
@@ -381,7 +376,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 		// 标题
 		gvContentTitle = (GridView) view.findViewById(R.id.gvContentTitle);
-		ColumnTitleAdapter weekdaysAdapter = new ColumnTitleAdapter(getActivity(), android.R.layout.simple_list_item_1, getDaysOfWeek());
+		ColumnTitleAdapter weekdaysAdapter = new ColumnTitleAdapter(getActivity(), android.R.layout.simple_list_item_1, getContentTitles());
 		gvContentTitle.setAdapter(weekdaysAdapter);
 
 		// 设置gridview中的所有View，这些View可以被回收
@@ -397,6 +392,8 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 		return view;
 	}
+	
+	public List<String> getContentTitles(){return null;};
 
 	/**
 	 * 得到初始参数，通过setArguments方式得到的数据
@@ -459,7 +456,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 				maxDateTime = CalendarHelper.getDateTimeFromString(maxDateTimeString, null);
 			}
 
-			//处理子类的数据
+			// 处理子类的数据
 			retrieveChildInitialArgs(args);
 		}
 		if (month == -1 || year == -1) {
@@ -468,29 +465,33 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			year = dateTime.getYear();
 		}
 	}
-	
+
 	/**
 	 * 子类覆盖的方法，获取子类的参数
+	 * 
 	 * @param bundle
 	 */
-	public void retrieveChildInitialArgs(Bundle bundle){
+	public void retrieveChildInitialArgs(Bundle bundle) {
 	}
-	
+
 	/**
 	 * 得到当前日期
+	 * 
 	 * @return
 	 */
 	public abstract DateTime buildCurrentDateTime();
-	
+
 	/**
 	 * 得到一个新日期，根据当前定义的unit，unit>0增加日期，否则减小日期
+	 * 
 	 * @param dateTime
 	 * @return
 	 */
 	public abstract DateTime buildDateTime(DateTime dateTime, int unit);
-	
+
 	/**
 	 * 设置4页包含日期的gridview，这些页面可以被回收
+	 * 
 	 * @param view
 	 */
 	private void setupDateGridPages(View view) {
@@ -525,72 +526,50 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		datePagerAdapters.add(adapter2);
 		datePagerAdapters.add(adapter3);
 
-		// Set adapters to the pageChangeListener so it can refresh the adapter
-		// when page change
+		// 设置adapter到Listener，当页面改变的时候刷新adapter
 		pageChangeListener.setCaldroidGridAdapters(datePagerAdapters);
 
-		// Setup InfiniteViewPager and InfinitePagerAdapter. The
-		// InfinitePagerAdapter is responsible
-		// for reuse the fragments
-		dateViewPager = (InfiniteViewPager) view.findViewById(R.id.months_infinite_pager);
+		// 设置无限滑动的viewpager和pageradapter，用于重用fragemnts
+		vpContent = (InfiniteViewPager) view.findViewById(R.id.vpContent);
 
-		// Set enable swipe
-		dateViewPager.setEnabled(enableSwipe);
-
-		// Set if viewpager wrap around particular month or all months (6 rows)
-		dateViewPager.setSixWeeksInCalendar(sixWeeksInCalendar);
+		// 是否允许滑动
+		vpContent.setEnabled(enableSwipe);
 
 		// Set the numberOfDaysInMonth to dateViewPager so it can calculate the
 		// height correctly
-		dateViewPager.setDatesInMonth(dateInMonthsList);
+		vpContent.setDatesInMonth(datetimeList);
+
+		setupChildDateGridPages();
 
 		// MonthPagerAdapter actually provides 4 real fragments. The
 		// InfinitePagerAdapter only recycles fragment provided by this
 		// MonthPagerAdapter
 		final ContentPagerAdapter pagerAdapter = new ContentPagerAdapter(getChildFragmentManager());
 
-		// Provide initial data to the fragments, before they are attached to
-		// view.
+		// 在view绘制之前，给fragment设置初始数据
 		fragments = pagerAdapter.getFragments();
 		for (int i = 0; i < NUMBER_OF_PAGES; i++) {
 			DateGridFragment dateGridFragment = fragments.get(i);
-			MonthCalendarGridAdapter adapter = datePagerAdapters.get(i);
+			BaseCalendarGridAdapter adapter = datePagerAdapters.get(i);
 			dateGridFragment.setGridAdapter(adapter);
 			dateGridFragment.setOnItemClickListener(getDateItemClickListener());
 			dateGridFragment.setOnItemLongClickListener(getDateItemLongClickListener());
 		}
 
-		// Setup InfinitePagerAdapter to wrap around MonthPagerAdapter
+		// 设置InfinitePagerAdapter围绕BaseGridPagerAdapter滑动
 		InfinitePagerAdapter infinitePagerAdapter = new InfinitePagerAdapter(pagerAdapter);
 
-		// Use the infinitePagerAdapter to provide data for dateViewPager
-		dateViewPager.setAdapter(infinitePagerAdapter);
+		// 使用infinitePagerAdapter来为dateViewPager提供数据
+		vpContent.setAdapter(infinitePagerAdapter);
 
-		// Setup pageChangeListener
-		dateViewPager.setOnPageChangeListener(pageChangeListener);
+		// 设置 pageChangeListener
+		vpContent.setOnPageChangeListener(pageChangeListener);
 	}
 
 	/**
-	 * To display the week day title
-	 * 
-	 * @return "SUN, MON, TUE, WED, THU, FRI, SAT"
+	 * 设置子类的page数据
 	 */
-	private ArrayList<String> getDaysOfWeek() {
-		ArrayList<String> list = new ArrayList<String>();
-
-		SimpleDateFormat fmt = new SimpleDateFormat("EEE", Locale.getDefault());
-
-		// 17 Feb 2013 is Sunday
-		DateTime sunday = new DateTime(2013, 2, 17, 0, 0, 0, 0);
-		DateTime nextDay = sunday.plusDays(startDayOfWeek - SUNDAY);
-
-		for (int i = 0; i < 7; i++) {
-			Date date = CalendarHelper.convertDateTimeToDate(nextDay);
-			list.add(fmt.format(date).toUpperCase());
-			nextDay = nextDay.plusDays(1);
-		}
-
-		return list;
+	public void setupChildDateGridPages() {
 	}
 
 	@Override
@@ -610,53 +589,36 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 	// ------------------------封装方法----------------------------
 	/**
-	 * Refresh month title text view when user swipe
-	 */
-	protected void refreshMonthTitleTextView() {
-		// Refresh title view
-		firstMonthTime.year = year;
-		firstMonthTime.month = month - 1;
-		firstMonthTime.monthDay = 1;
-		long millis = firstMonthTime.toMillis(true);
-
-		// This is the method used by the platform Calendar app to get a
-		// correctly localized month name for display on a wall calendar
-		monthYearStringBuilder.setLength(0);
-		String monthTitle = DateUtils.formatDateRange(getActivity(), monthYearFormatter, millis, millis, MONTH_YEAR_FLAG).toString();
-
-		monthTitleTextView.setText(monthTitle);
-	}
-
-	/**
-	 * Refresh view when parameter changes. You should always change all
-	 * parameters first, then call this method.
+	 * 当参数变化的时候刷新视图，调用的时候需要线改变参数，后调用
 	 */
 	public void refreshView() {
-		// If month and year is not yet initialized, refreshView doesn't do
-		// anything
 		if (month == -1 || year == -1) {
 			return;
 		}
 
-		refreshMonthTitleTextView();
+		refreshTitle();
 
-		// Refresh the date grid views
-		for (MonthCalendarGridAdapter adapter : datePagerAdapters) {
-			// Reset caldroid data
+		// 刷新DateGrid
+		for (BaseCalendarGridAdapter adapter : datePagerAdapters) {
+			// 重置内部数据
 			adapter.setCaldroidData(getCaldroidData());
 
-			// Reset extra data
+			// 重置额外数据
 			adapter.setExtraData(extraData);
 
-			// Refresh view
+			// 刷新View
 			adapter.notifyDataSetChanged();
 		}
 	}
 
 	/**
-	 * Set month and year for the calendar. This is to avoid naive
-	 * implementation of manipulating month and year. All dates within same
-	 * month/year give same result
+	 * 当用户滑动的时候改变Title
+	 */
+	protected void refreshTitle() {
+	}
+
+	/**
+	 * 设置日历的日期
 	 * 
 	 * @param date
 	 */
@@ -664,6 +626,11 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		setCalendarDateTime(CalendarHelper.convertDateToDateTime(date));
 	}
 
+	/**
+	 * 设置日历的时间
+	 * 
+	 * @param dateTime
+	 */
 	public void setCalendarDateTime(DateTime dateTime) {
 		month = dateTime.getMonth();
 		year = dateTime.getYear();
@@ -677,7 +644,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * Move calendar to the specified date
+	 * 滑动到指定的日期
 	 * 
 	 * @param date
 	 */
@@ -687,18 +654,21 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 	/**
 	 * 得到该单位下的第一个时间
+	 * 
 	 * @return
 	 */
 	protected abstract DateTime getFirstDateTime(DateTime datetime);
-	
+
 	/**
 	 * 得到该单位下的最后一个时间
+	 * 
 	 * @return
 	 */
 	protected abstract DateTime getLastDateTime(DateTime datetime);
-	
+
 	/**
 	 * 移动到指定日期，带动画，格式
+	 * 
 	 * @param dateTime
 	 */
 	public void moveToDateTime(DateTime datetime) {
@@ -708,7 +678,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 		DateTime newFirstDateTime = getFirstDateTime(datetime);
 		DateTime newLastDateTime = getLastDateTime(datetime);
-		
+
 		// 当目标时间小于第一个时间，向左滑动
 		if (datetime.lt(fistDateTime)) {
 
@@ -717,9 +687,9 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			int currentItem = vpContent.getCurrentItem();
 			pageChangeListener.refreshAdapters(currentItem);
 
-			//向左滑动
+			// 向左滑动
 			vpContent.setCurrentItem(currentItem - 1);
-		} else if (datetime.gt(lastDateTime)) {//目标时间大于最后一个时间，向右滑动，时间增加
+		} else if (datetime.gt(lastDateTime)) {// 目标时间大于最后一个时间，向右滑动，时间增加
 			// 刷新adapters
 			pageChangeListener.setCurrentDateTime(newLastDateTime);
 			int currentItem = vpContent.getCurrentItem();
@@ -733,7 +703,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 	// -----------------------------listeners---------------------------------
 	/**
-	 * DatePageChangeListener 当用户滑动的时候刷新数据 
+	 * DatePageChangeListener 当用户滑动的时候刷新数据
 	 */
 	public class DatePageChangeListener implements OnPageChangeListener {
 		private int currentPage = InfiniteViewPager.OFFSET;
@@ -741,7 +711,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		private ArrayList<BaseCalendarGridAdapter> caldroidGridAdapters;
 
 		/**
-		 * Return currentPage of the dateViewPager
+		 * 得到dateViewPager的当前pager
 		 * 
 		 * @return
 		 */
@@ -749,12 +719,17 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			return currentPage;
 		}
 
+		/**
+		 * 设置当前的page
+		 * 
+		 * @param currentPage
+		 */
 		public void setCurrentPage(int currentPage) {
 			this.currentPage = currentPage;
 		}
 
 		/**
-		 * Return currentDateTime of the selected page
+		 * 得到当前选中的时间
 		 * 
 		 * @return
 		 */
@@ -762,6 +737,11 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			return currentDateTime;
 		}
 
+		/**
+		 * 设置当前时间
+		 * 
+		 * @param dateTime
+		 */
 		public void setCurrentDateTime(DateTime dateTime) {
 			this.currentDateTime = dateTime;
 			setCalendarDateTime(currentDateTime);
@@ -774,6 +754,11 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			return caldroidGridAdapters;
 		}
 
+		/**
+		 * 设置adapter
+		 * 
+		 * @param caldroidGridAdapters
+		 */
 		public void setCaldroidGridAdapters(ArrayList<BaseCalendarGridAdapter> caldroidGridAdapters) {
 			this.caldroidGridAdapters = caldroidGridAdapters;
 		}
@@ -835,7 +820,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 				// 刷新下一个Adapter
 				nextAdapter.setAdapterDateTime(currentDateTime.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
 				nextAdapter.notifyDataSetChanged();
-			} else if (position > currentPage) {//向右滑动
+			} else if (position > currentPage) {// 向右滑动
 				// Update current date time to next month
 				currentDateTime = currentDateTime.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
 
@@ -843,7 +828,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 				nextAdapter.setAdapterDateTime(currentDateTime.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
 				nextAdapter.notifyDataSetChanged();
 
-			} else {//向左滑动
+			} else {// 向左滑动
 				// Update current date time to previous month
 				currentDateTime = currentDateTime.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
 
@@ -878,6 +863,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 	/**
 	 * 点击效果（在非无效状态，并且在最小/最大时间区域内
+	 * 
 	 * @return
 	 */
 	private OnItemClickListener getDateItemClickListener() {
@@ -907,6 +893,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 	/**
 	 * 长按点击效果（在非无效状态，并且在最小/最大时间区域内
+	 * 
 	 * @return
 	 */
 	private OnItemLongClickListener getDateItemLongClickListener() {
@@ -952,6 +939,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 	/**
 	 * 得到右边按钮
+	 * 
 	 * @return
 	 */
 	public Button getRightArrowButton() {
@@ -959,28 +947,23 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * 设置
+	 * 得到title文字
 	 */
 	public TextView getTitleTextView() {
 		return tvTitle;
 	}
 
+	/**
+	 * 设置title的文字
+	 * 
+	 * @param titleView
+	 */
 	public void setTitleTextView(TextView titleView) {
 		this.tvTitle = titleView;
 	}
 
 	/**
-	 * Get 4 adapters of the date grid views. Useful to set custom data and
-	 * refresh date grid view
-	 * 
-	 * @return
-	 */
-	public ArrayList<MonthCalendarGridAdapter> getDatePagerAdapters() {
-		return datePagerAdapters;
-	}
-
-	/**
-	 * caldroidData return data belong to Caldroid
+	 * 内部用到的数据
 	 * 
 	 * @return
 	 */
@@ -990,8 +973,8 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		caldroidData.put(SELECTED_DATES, selectedDates);
 		caldroidData.put(_MIN_DATE_TIME, minDateTime);
 		caldroidData.put(_MAX_DATE_TIME, maxDateTime);
-		caldroidData.put(START_DAY_OF_WEEK, Integer.valueOf(startDayOfWeek));
-		caldroidData.put(SIX_WEEKS_IN_CALENDAR, Boolean.valueOf(sixWeeksInCalendar));
+
+		getChildCaldroidData();
 
 		// For internal use
 		caldroidData.put(_BACKGROUND_FOR_DATETIME_MAP, backgroundForDateTimeMap);
@@ -1001,21 +984,18 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * Extra data is data belong to Client
-	 * 
-	 * @return
+	 * 得到子类的数据
 	 */
-	public HashMap<String, Object> getExtraData() {
-		return extraData;
+	public void getChildCaldroidData() {
 	}
 
 	/**
-	 * Client can set custom data in this HashMap
+	 * 得到grid view的adapter，用于设置自定义数据，以及刷新gridview的数据
 	 * 
-	 * @param extraData
+	 * @return
 	 */
-	public void setExtraData(HashMap<String, Object> extraData) {
-		this.extraData = extraData;
+	public ArrayList<BaseCalendarGridAdapter> getDatePagerAdapters() {
+		return datePagerAdapters;
 	}
 
 	/**
@@ -1251,5 +1231,23 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	public void setEnableSwipe(boolean enableSwipe) {
 		this.enableSwipe = enableSwipe;
 		vpContent.setEnabled(enableSwipe);
+	}
+
+	/**
+	 * 客户端的额外数据
+	 * 
+	 * @return
+	 */
+	public HashMap<String, Object> getExtraData() {
+		return extraData;
+	}
+
+	/**
+	 * 客户端在此处可以设置额外数据
+	 * 
+	 * @param extraData
+	 */
+	public void setExtraData(HashMap<String, Object> extraData) {
+		this.extraData = extraData;
 	}
 }

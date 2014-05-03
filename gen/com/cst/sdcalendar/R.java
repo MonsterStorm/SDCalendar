@@ -55,11 +55,11 @@ public final class R {
         public static final int custom_cell=0x7f07000b;
         public static final int customize_button=0x7f070002;
         public static final int gvContentTitle=0x7f070009;
-        public static final int months_infinite_pager=0x7f07000a;
         public static final int show_dialog_button=0x7f070003;
         public static final int textview=0x7f070004;
         public static final int tv1=0x7f07000c;
         public static final int tv2=0x7f07000d;
+        public static final int vpContent=0x7f07000a;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

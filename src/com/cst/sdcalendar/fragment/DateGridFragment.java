@@ -10,6 +10,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 
 import com.cst.sdcalendar.R;
+import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
 import com.cst.sdcalendar.adapter.MonthCalendarGridAdapter;
 
 /**
@@ -25,7 +26,7 @@ public class DateGridFragment extends Fragment {
 	private int column;//列数目
 
 	private GridView gridView;
-	private MonthCalendarGridAdapter gridAdapter;
+	private BaseCalendarGridAdapter gridAdapter;
 	
 	//点击事件
 	private OnItemClickListener onItemClickListener;
@@ -71,11 +72,11 @@ public class DateGridFragment extends Fragment {
 		this.onItemLongClickListener = onItemLongClickListener;
 	}
 
-	public MonthCalendarGridAdapter getGridAdapter() {
+	public BaseCalendarGridAdapter getGridAdapter() {
 		return gridAdapter;
 	}
 
-	public void setGridAdapter(MonthCalendarGridAdapter gridAdapter) {
+	public void setGridAdapter(BaseCalendarGridAdapter gridAdapter) {
 		this.gridAdapter = gridAdapter;
 	}
 
