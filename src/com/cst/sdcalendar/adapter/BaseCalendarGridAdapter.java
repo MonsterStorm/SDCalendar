@@ -5,7 +5,7 @@ import hirondelle.date4j.DateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.cst.sdcalendar.fragment.CalendarFragment;
+import com.cst.sdcalendar.fragment.BaseCalendarFragment;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -14,7 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 /**
- * Calendar GridAdapter»ùÀà
+ * Calendar GridAdapteråŸºç±»
  * 
  * @author song
  * 
@@ -23,34 +23,40 @@ public abstract class BaseCalendarGridAdapter extends BaseAdapter {
 
 	protected Context context;
 	protected Resources resources;
-	// Ê±¼ä±í
+	// æ—¶é—´è¡¨
 	protected ArrayList<DateTime> datetimeList;
 	protected ArrayList<DateTime> disableDates;
 	protected ArrayList<DateTime> selectedDates;
 
-	// Ê§Ğ§Ê±¼äµÄÏÔÊ¾
+	// å¤±æ•ˆæ—¶é—´çš„æ˜¾ç¤º
 	protected HashMap<DateTime, Integer> disableDatesMap = new HashMap<DateTime, Integer>();
-	// Ñ¡ÖĞÊ±¼äµÄÏÔÊ¾
+	// é€‰ä¸­æ—¶é—´çš„æ˜¾ç¤º
 	protected HashMap<DateTime, Integer> selectedDatesMap = new HashMap<DateTime, Integer>();
 
-	// ×îĞ¡Ê±¼ä
+	// æœ€å°æ—¶é—´
 	protected DateTime minDateTime;
-	// ×î´óÊ±¼ä
+	// æœ€å¤§æ—¶é—´
 	protected DateTime maxDateTime;
 
-	// ÄÚ²¿Êı¾İ
+	// å†…éƒ¨æ•°æ®
 	protected HashMap<String, Object> caldroidData;
-	// ÓÃ»§Êı¾İ
+	// ç”¨æˆ·æ•°æ®
 	protected HashMap<String, Object> extraData;
 	
 	public BaseCalendarGridAdapter(Context context, HashMap<String, Object> caldroidData, HashMap<String, Object> extraData){
 		this.context = context;
-		this.context = context;
 		this.caldroidData = caldroidData;
 		this.extraData = extraData;
 		this.resources = context.getResources();
-		populateFromCaldroidData();
 	}
+	
+	/**
+	 * å­ç±»å¿…é¡»åœ¨æ„é€ æ–¹æ³•åè°ƒç”¨è¯¥æ–¹æ³•
+	 */
+	public void init(){
+		populateChildFromCaldroidData();
+	}
+	
 	
 	@Override
 	public int getCount() {
@@ -76,11 +82,11 @@ public abstract class BaseCalendarGridAdapter extends BaseAdapter {
 	}
 
 	/**
-	 * »ñÈ¡ÄÚ²¿²ÎÊı£¬´ÓcaldroidDataÖĞÈ¡µÃ
+	 * è·å–å†…éƒ¨å‚æ•°ï¼Œä»caldroidDataä¸­å–å¾—
 	 */
 	@SuppressWarnings("unchecked")
 	private void populateFromCaldroidData() {
-		disableDates = (ArrayList<DateTime>) caldroidData.get(CalendarFragment.DISABLE_DATES);
+		disableDates = (ArrayList<DateTime>) caldroidData.get(BaseCalendarFragment.DISABLE_DATES);
 		if (disableDates != null) {
 			disableDatesMap.clear();
 			for (DateTime dateTime : disableDates) {
@@ -88,7 +94,7 @@ public abstract class BaseCalendarGridAdapter extends BaseAdapter {
 			}
 		}
 
-		selectedDates = (ArrayList<DateTime>) caldroidData.get(CalendarFragment.SELECTED_DATES);
+		selectedDates = (ArrayList<DateTime>) caldroidData.get(BaseCalendarFragment.SELECTED_DATES);
 		if (selectedDates != null) {
 			selectedDatesMap.clear();
 			for (DateTime dateTime : selectedDates) {
@@ -96,22 +102,22 @@ public abstract class BaseCalendarGridAdapter extends BaseAdapter {
 			}
 		}
 
-		minDateTime = (DateTime) caldroidData.get(CalendarFragment._MIN_DATE_TIME);
-		maxDateTime = (DateTime) caldroidData.get(CalendarFragment._MAX_DATE_TIME);
+		minDateTime = (DateTime) caldroidData.get(BaseCalendarFragment._MIN_DATE_TIME);
+		maxDateTime = (DateTime) caldroidData.get(BaseCalendarFragment._MAX_DATE_TIME);
 		
 		populateChildFromCaldroidData();
 	}
 	
 	/**
-	 * ´¦ÀíÄ³Ò»ÈÕÆÚµÄ±³¾°ºÍ×ÖÌåÑÕÉ«
+	 * å¤„ç†æŸä¸€æ—¥æœŸçš„èƒŒæ™¯å’Œå­—ä½“é¢œè‰²
 	 * @param dateTime
 	 * @param backgroundView
 	 * @param textView
 	 */
 	@SuppressWarnings("unchecked")
 	protected void setCustomResources(DateTime dateTime, View backgroundView, TextView textView) {
-		//±³¾°ÑÕÉ«
-		HashMap<DateTime, Integer> backgroundForDateTimeMap = (HashMap<DateTime, Integer>) caldroidData.get(CalendarFragment._BACKGROUND_FOR_DATETIME_MAP);
+		//èƒŒæ™¯é¢œè‰²
+		HashMap<DateTime, Integer> backgroundForDateTimeMap = (HashMap<DateTime, Integer>) caldroidData.get(BaseCalendarFragment._BACKGROUND_FOR_DATETIME_MAP);
 		if (backgroundForDateTimeMap != null) {
 			Integer backgroundResource = backgroundForDateTimeMap.get(dateTime);
 			if (backgroundResource != null) {
@@ -119,8 +125,8 @@ public abstract class BaseCalendarGridAdapter extends BaseAdapter {
 			}
 		}
 
-		//ÉèÖÃÎÄ×ÖÑÕÉ«
-		HashMap<DateTime, Integer> textColorForDateTimeMap = (HashMap<DateTime, Integer>) caldroidData.get(CalendarFragment._TEXT_COLOR_FOR_DATETIME_MAP);
+		//è®¾ç½®æ–‡å­—é¢œè‰²
+		HashMap<DateTime, Integer> textColorForDateTimeMap = (HashMap<DateTime, Integer>) caldroidData.get(BaseCalendarFragment._TEXT_COLOR_FOR_DATETIME_MAP);
 		if (textColorForDateTimeMap != null) {
 			Integer textColorResource = textColorForDateTimeMap.get(dateTime);
 			if (textColorResource != null) {
@@ -130,19 +136,19 @@ public abstract class BaseCalendarGridAdapter extends BaseAdapter {
 	}
 	
 	/**
-	 * ×ÓÀà´¦Àí²ÎÊı³õÊ¼»¯
+	 * å­ç±»å¤„ç†å‚æ•°åˆå§‹åŒ–
 	 */
 	public abstract void populateChildFromCaldroidData();
 	
 	/**
-	 * ÉèÖÃadapterµÄÊ±¼ä
+	 * è®¾ç½®adapterçš„æ—¶é—´
 	 */
 	public abstract void setAdapterDateTime(DateTime datetime);
 
 	// ---------------------getters and setters-----------------------
 	public void setCaldroidData(HashMap<String, Object> caldroidData) {
 		this.caldroidData = caldroidData;
-		//ÖØĞÂ»ñÈ¡ËùÓĞ²ÎÊı
+		//é‡æ–°è·å–æ‰€æœ‰å‚æ•°
 		populateFromCaldroidData();
 	}
 

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.cst.sdcalendar.R;
 import com.cst.sdcalendar.adapter.MonthCalendarGridAdapter;
-import com.cst.sdcalendar.fragment.CalendarFragment;
+import com.cst.sdcalendar.fragment.BaseCalendarFragment;
 
 public class CalendarSampleCustomAdapter extends MonthCalendarGridAdapter {
 
@@ -57,11 +57,11 @@ public class CalendarSampleCustomAdapter extends MonthCalendarGridAdapter {
 		// Customize for disabled dates and date outside min/max dates
 		if ((minDateTime != null && dateTime.lt(minDateTime)) || (maxDateTime != null && dateTime.gt(maxDateTime)) || (disableDates != null && disableDates.indexOf(dateTime) != -1)) {
 
-			tv1.setTextColor(CalendarFragment.disabledTextColor);
-			if (CalendarFragment.disabledBackgroundDrawable == -1) {
+			tv1.setTextColor(BaseCalendarFragment.disabledTextColor);
+			if (BaseCalendarFragment.disabledBackgroundDrawable == -1) {
 				cellView.setBackgroundResource(R.drawable.disable_cell);
 			} else {
-				cellView.setBackgroundResource(CalendarFragment.disabledBackgroundDrawable);
+				cellView.setBackgroundResource(BaseCalendarFragment.disabledBackgroundDrawable);
 			}
 
 			if (dateTime.equals(getToday())) {
@@ -74,13 +74,13 @@ public class CalendarSampleCustomAdapter extends MonthCalendarGridAdapter {
 
 		// Customize for selected dates
 		if (selectedDates != null && selectedDates.indexOf(dateTime) != -1) {
-			if (CalendarFragment.selectedBackgroundDrawable != -1) {
-				cellView.setBackgroundResource(CalendarFragment.selectedBackgroundDrawable);
+			if (BaseCalendarFragment.selectedBackgroundDrawable != -1) {
+				cellView.setBackgroundResource(BaseCalendarFragment.selectedBackgroundDrawable);
 			} else {
 				cellView.setBackgroundColor(resources.getColor(R.color.caldroid_sky_blue));
 			}
 
-			tv1.setTextColor(CalendarFragment.selectedTextColor);
+			tv1.setTextColor(BaseCalendarFragment.selectedTextColor);
 
 		} else {
 			shouldResetSelectedView = true;

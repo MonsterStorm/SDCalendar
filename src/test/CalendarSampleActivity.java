@@ -17,13 +17,14 @@ import android.widget.Toast;
 
 import com.cst.sdcalendar.R;
 import com.cst.sdcalendar.calendar.CalendarListener;
-import com.cst.sdcalendar.fragment.CalendarFragment;
+import com.cst.sdcalendar.fragment.BaseCalendarFragment;
+import com.cst.sdcalendar.fragment.MonthFragment;
 
 @SuppressLint("SimpleDateFormat")
 public class CalendarSampleActivity extends FragmentActivity {
 	private boolean undo = false;
-	private CalendarFragment caldroidFragment;
-	private CalendarFragment dialogCaldroidFragment;
+	private BaseCalendarFragment caldroidFragment;
+	private BaseCalendarFragment dialogCaldroidFragment;
 
 	private void setCustomResourceForDates() {
 		Calendar cal = Calendar.getInstance();
@@ -56,7 +57,7 @@ public class CalendarSampleActivity extends FragmentActivity {
 
 		// Setup caldroid fragment
 		// **** If you want normal CalendarFragment, use below line ****
-		caldroidFragment = new CalendarFragment();
+		caldroidFragment = new MonthFragment();
 
 		// //////////////////////////////////////////////////////////////////////
 		// **** This is to show customized fragment. If you want customized
@@ -74,10 +75,10 @@ public class CalendarSampleActivity extends FragmentActivity {
 		else {
 			Bundle args = new Bundle();
 			Calendar cal = Calendar.getInstance();
-			args.putInt(CalendarFragment.MONTH, cal.get(Calendar.MONTH) + 1);
-			args.putInt(CalendarFragment.YEAR, cal.get(Calendar.YEAR));
-			args.putBoolean(CalendarFragment.ENABLE_SWIPE, true);
-			args.putBoolean(CalendarFragment.SIX_WEEKS_IN_CALENDAR, false);
+			args.putInt(BaseCalendarFragment.MONTH, cal.get(Calendar.MONTH) + 1);
+			args.putInt(BaseCalendarFragment.YEAR, cal.get(Calendar.YEAR));
+			args.putBoolean(BaseCalendarFragment.ENABLE_SWIPE, true);
+			args.putBoolean(MonthFragment.SIX_WEEKS_IN_CALENDAR, false);
 
 			// Uncomment this to customize startDayOfWeek
 			// args.putInt(CalendarFragment.START_DAY_OF_WEEK,
@@ -103,8 +104,8 @@ public class CalendarSampleActivity extends FragmentActivity {
 			}
 
 			@Override
-			public void onChangeMonth(int month, int year) {
-				String text = "month: " + month + " year: " + year;
+			public void onChangeDateTime(int year, int month, int week, int day) {
+				String text = "month: " + month + " year: " + year + " week: " + week + " day: " + day;
 				Toast.makeText(getApplicationContext(), text,
 						Toast.LENGTH_SHORT).show();
 			}
@@ -225,7 +226,7 @@ public class CalendarSampleActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				// Setup caldroid to use as dialog
-				dialogCaldroidFragment = new CalendarFragment();
+				dialogCaldroidFragment = new MonthFragment();
 				dialogCaldroidFragment.setCaldroidListener(listener);
 
 				// If activity is recovered from rotation
@@ -239,13 +240,13 @@ public class CalendarSampleActivity extends FragmentActivity {
 						args = new Bundle();
 						dialogCaldroidFragment.setArguments(args);
 					}
-					args.putString(CalendarFragment.DIALOG_TITLE,
+					args.putString(BaseCalendarFragment.DIALOG_TITLE,
 							"Select a date");
 				} else {
 					// Setup arguments
 					Bundle bundle = new Bundle();
 					// Setup dialogTitle
-					bundle.putString(CalendarFragment.DIALOG_TITLE,
+					bundle.putString(BaseCalendarFragment.DIALOG_TITLE,
 							"Select a date");
 					dialogCaldroidFragment.setArguments(bundle);
 				}

@@ -2,6 +2,7 @@ package com.cst.sdcalendar.adapter;
 
 import hirondelle.date4j.DateTime;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -13,42 +14,43 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cst.sdcalendar.R;
-import com.cst.sdcalendar.fragment.CalendarFragment;
+import com.cst.sdcalendar.fragment.MonthFragment;
 import com.cst.sdcalendar.util.CalendarHelper;
 
 /**
- * ÔÂÊÓÍ¼adapter
+ * æœˆè§†å›¾adapter
  */
 public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
-	// µ±Ç°ÔÂ·İ
+	// å½“å‰æœˆä»½
 	protected int month;
-	// µ±Ç°Äê
+	// å½“å‰å¹´
 	protected int year;
-	// µ±Ç°Ê±¼ä
+	// å½“å‰æ—¶é—´
 	protected DateTime today;
-	// ÆğÊ¼ÈÕÎªÖÜµÄµÚ¼¸Ìì
+	// èµ·å§‹æ—¥ä¸ºå‘¨çš„ç¬¬å‡ å¤©
 	protected int startDayOfWeek;
-	// ÊÇ·ñÏÔÊ¾6ĞĞÊÓÍ¼
+	// æ˜¯å¦æ˜¾ç¤º6è¡Œè§†å›¾
 	protected boolean sixWeeksInCalendar;
 
-	public MonthCalendarGridAdapter(Context context, int month, int year, HashMap<String, Object> caldroidData, HashMap<String, Object> extraData) {
+	public MonthCalendarGridAdapter(Context context, int year, int month, HashMap<String, Object> caldroidData, HashMap<String, Object> extraData) {
 		super(context, caldroidData, extraData);
 		this.month = month;
 		this.year = year;
+		init();
 	}
 
 	/**
-	 * ´¦Àí×ÓÀà²ÎÊı
+	 * å¤„ç†å­ç±»å‚æ•°
 	 */
 	public void populateChildFromCaldroidData() {
-		startDayOfWeek = (Integer) caldroidData.get(CalendarFragment.START_DAY_OF_WEEK);
-		sixWeeksInCalendar = (Boolean) caldroidData.get(CalendarFragment.SIX_WEEKS_IN_CALENDAR);
+		startDayOfWeek = (Integer) caldroidData.get(MonthFragment.START_DAY_OF_WEEK);
+		sixWeeksInCalendar = (Boolean) caldroidData.get(MonthFragment.SIX_WEEKS_IN_CALENDAR);
 		this.datetimeList = CalendarHelper.getFullWeeksForMonthView(this.month, this.year, startDayOfWeek, sixWeeksInCalendar);
 	}
 	
 
 	/**
-	 * ¶¨ÖÆCellµÄ±³¾°ºÍÑÕÉ«£¬¸ù¾İ²»Í¬µÄ×´Ì¬
+	 * å®šåˆ¶Cellçš„èƒŒæ™¯å’Œé¢œè‰²ï¼Œæ ¹æ®ä¸åŒçš„çŠ¶æ€
 	 * 
 	 * @param position
 	 * @param cellView
@@ -57,7 +59,10 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 		cellView.setTextColor(Color.BLACK);
 
 		// Get dateTime of this cell
-		DateTime dateTime = this.datetimeList.get(position);
+		DateTime dateInPos = this.datetimeList.get(position);
+		
+		//å–åˆ°æ—¥
+		DateTime dateTime = new DateTime(dateInPos.getYear(), dateInPos.getMonth(), dateInPos.getDay(), 0, 0, 0, 0);
 
 		// Set color of the dates in previous / next month
 		if (dateTime.getMonth() != month) {
@@ -70,11 +75,11 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 		// Customize for disabled dates and date outside min/max dates
 		if ((minDateTime != null && dateTime.lt(minDateTime)) || (maxDateTime != null && dateTime.gt(maxDateTime)) || (disableDates != null && disableDatesMap.containsKey(dateTime))) {
 
-			cellView.setTextColor(CalendarFragment.disabledTextColor);
-			if (CalendarFragment.disabledBackgroundDrawable == -1) {
+			cellView.setTextColor(MonthFragment.disabledTextColor);
+			if (MonthFragment.disabledBackgroundDrawable == -1) {
 				cellView.setBackgroundResource(R.drawable.disable_cell);
 			} else {
-				cellView.setBackgroundResource(CalendarFragment.disabledBackgroundDrawable);
+				cellView.setBackgroundResource(MonthFragment.disabledBackgroundDrawable);
 			}
 
 			if (dateTime.equals(getToday())) {
@@ -86,13 +91,13 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 
 		// Customize for selected dates
 		if (selectedDates != null && selectedDatesMap.containsKey(dateTime)) {
-			if (CalendarFragment.selectedBackgroundDrawable != -1) {
-				cellView.setBackgroundResource(CalendarFragment.selectedBackgroundDrawable);
+			if (MonthFragment.selectedBackgroundDrawable != -1) {
+				cellView.setBackgroundResource(MonthFragment.selectedBackgroundDrawable);
 			} else {
 				cellView.setBackgroundColor(resources.getColor(R.color.caldroid_sky_blue));
 			}
 
-			cellView.setTextColor(CalendarFragment.selectedTextColor);
+			cellView.setTextColor(MonthFragment.selectedTextColor);
 		} else {
 			shouldResetSelectedView = true;
 		}
@@ -140,5 +145,5 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 		}
 		return today;
 	}
-
+	
 }

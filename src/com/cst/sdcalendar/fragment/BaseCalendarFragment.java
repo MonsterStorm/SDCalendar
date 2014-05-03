@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.TimeZone;
 
 import android.annotation.SuppressLint;
@@ -33,22 +32,25 @@ import android.widget.TextView;
 import com.cst.sdcalendar.R;
 import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
 import com.cst.sdcalendar.adapter.ColumnTitleAdapter;
-import com.cst.sdcalendar.adapter.ContentPagerAdapter;
 import com.cst.sdcalendar.calendar.CalendarListener;
 import com.cst.sdcalendar.util.CalendarHelper;
+import com.cst.sdcalendar.viewpager.ContentPagerAdapter;
 import com.cst.sdcalendar.viewpager.InfinitePagerAdapter;
 import com.cst.sdcalendar.viewpager.InfiniteViewPager;
 
 /**
- * Calendar»ùÀà
+ * CalendaråŸºç±»
  */
 
 @SuppressLint("DefaultLocale")
 public abstract class BaseCalendarFragment extends DialogFragment {
 	public String TAG = "BaseCalendarFragment";
+	
+	//default date format
+	public static final String DATE_FORMAT_DEFAULT = "yyyy-MM-dd";
 
 	/**
-	 * ÖÜ
+	 * å‘¨
 	 */
 	public static int SUNDAY = 1;
 	public static int MONDAY = 2;
@@ -59,111 +61,116 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	public static int SATURDAY = 7;
 
 	/**
-	 * ¶¨ÖÆÑ¡ÖĞÈÕÆÚµÄ±³¾°ºÍ×ÖÌåÑÕÉ«
+	 * å®šåˆ¶é€‰ä¸­æ—¥æœŸçš„èƒŒæ™¯å’Œå­—ä½“é¢œè‰²
 	 */
 	public static int selectedBackgroundDrawable = -1;
 	public static int selectedTextColor = Color.BLACK;
 
 	/**
-	 * ¶¨ÖÆ²»¿ÉÓÃÊ±¼äµÄ±³¾°ºÍ×ÖÌåÑÕÉ«
+	 * å®šåˆ¶ä¸å¯ç”¨æ—¶é—´çš„èƒŒæ™¯å’Œå­—ä½“é¢œè‰²
 	 */
 	public static int disabledBackgroundDrawable = -1;
 	public static int disabledTextColor = Color.GRAY;
 
 	/**
-	 * Ò³Êı
+	 * é¡µæ•°
 	 */
 	public final static int NUMBER_OF_PAGES = 4;
 
 	/**
-	 * View×é¼ş
+	 * Viewç»„ä»¶
 	 */
-	protected Button btnArrowLeft;// ×ó±ß°´Å¥
-	protected Button btnArrowRight;// ÓÒ±ß°´Å¥
-	protected TextView tvTitle;// ±êÌâ
-	protected GridView gvContentTitle;// ÄÚÈİ±êÌâ
-	protected InfiniteViewPager vpContent;// Ö÷Ìå²¿·Ö
+	protected Button btnArrowLeft;// å·¦è¾¹æŒ‰é’®
+	protected Button btnArrowRight;// å³è¾¹æŒ‰é’®
+	protected TextView tvTitle;// æ ‡é¢˜
+	protected GridView gvContentTitle;// å†…å®¹æ ‡é¢˜
+	protected InfiniteViewPager vpContent;// ä¸»ä½“éƒ¨åˆ†
 	protected DatePageChangeListener pageChangeListener;
 	protected ArrayList<DateGridFragment> fragments;
 
 	/**
-	 * ³õÊ¼»¯²ÎÊı
+	 * åˆå§‹åŒ–å‚æ•°
 	 */
-	public final static String DIALOG_TITLE = "dialogTitle";// ±êÌâ
+	public final static String DIALOG_TITLE = "dialogTitle";// æ ‡é¢˜
 	public final static String DAY = "day";
 	public final static String WEEK = "week";
 	public final static String MONTH = "month";
 	public final static String YEAR = "year";
-	public final static String DISABLE_DATES = "disableDates";// Ê§Ğ§ÈÕÆÚ
-	public final static String SELECTED_DATES = "selectedDates";// Ñ¡ÖĞÈÕÆÚ
-	public final static String MIN_DATE = "minDate";// ×îĞ¡ÈÕÆÚ
-	public final static String MAX_DATE = "maxDate";// ×î´óÈÕÆÚ
-	// Ğ§¹û²ÎÊı
-	public final static String SHOW_NAVIGATION_ARROWS = "showNavigationArrows";// ÊÇ·ñÏÔÊ¾¼ıÍ·
-	public final static String ENABLE_SWIPE = "enableSwipe";// ÊÇ·ñÔÊĞí»¬¶¯
+	public final static String DISABLE_DATES = "disableDates";// å¤±æ•ˆæ—¥æœŸ
+	public final static String SELECTED_DATES = "selectedDates";// é€‰ä¸­æ—¥æœŸ
+	public final static String MIN_DATE = "minDate";// æœ€å°æ—¥æœŸ
+	public final static String MAX_DATE = "maxDate";// æœ€å¤§æ—¥æœŸ
+	// æ•ˆæœå‚æ•°
+	public final static String SHOW_NAVIGATION_ARROWS = "showNavigationArrows";// æ˜¯å¦æ˜¾ç¤ºç®­å¤´
+	public final static String ENABLE_SWIPE = "enableSwipe";// æ˜¯å¦å…è®¸æ»‘åŠ¨
 	public final static String ENABLE_CLICK_ON_DISABLED_DATES = "enableClickOnDisabledDates";
 
 	/**
-	 * ³õÊ¼»¯Êı¾İ
+	 * åˆå§‹åŒ–æ•°æ®
 	 */
-	protected String dialogTitle;// ¶Ô»°¿ò±êÌâ
+	protected String dialogTitle;// å¯¹è¯æ¡†æ ‡é¢˜
 	protected int day = -1;
 	protected int week = -1;
 	protected int month = -1;
 	protected int year = -1;
-	protected ArrayList<DateTime> disableDates = new ArrayList<DateTime>();// Ê§Ğ§Ê±¼ä
-	protected ArrayList<DateTime> selectedDates = new ArrayList<DateTime>();// Ñ¡ÖĞÊ±¼ä
-	protected DateTime minDateTime;// ×îĞ¡Ê±¼ä
-	protected DateTime maxDateTime;// ×î´óÊ±¼ä
-	protected ArrayList<DateTime> datetimeList;// Ê±¼ä
+	protected ArrayList<DateTime> disableDates = new ArrayList<DateTime>();// å¤±æ•ˆæ—¶é—´
+	protected ArrayList<DateTime> selectedDates = new ArrayList<DateTime>();// é€‰ä¸­æ—¶é—´
+	protected DateTime minDateTime;// æœ€å°æ—¶é—´
+	protected DateTime maxDateTime;// æœ€å¤§æ—¶é—´
+	protected ArrayList<DateTime> datetimeList;// æ—¶é—´
 
 	/**
-	 * ÄÚ²¿Ê¹ÓÃ
+	 * å†…éƒ¨ä½¿ç”¨
 	 */
 	public final static String _MIN_DATE_TIME = "_minDateTime";
 	public final static String _MAX_DATE_TIME = "_maxDateTime";
 	public final static String _BACKGROUND_FOR_DATETIME_MAP = "_backgroundForDateTimeMap";
 	public final static String _TEXT_COLOR_FOR_DATETIME_MAP = "_textColorForDateTimeMap";
 
-	// ÄÚ²¿Êı¾İ
+	// å†…éƒ¨æ•°æ®
 	protected HashMap<String, Object> caldroidData = new HashMap<String, Object>();
-	// ÓÃ»§Êı¾İ
+	// ç”¨æˆ·æ•°æ®
 	protected HashMap<String, Object> extraData = new HashMap<String, Object>();
-	// Ä³Ò»Ê±¼ä±³¾°
+	// æŸä¸€æ—¶é—´èƒŒæ™¯
 	protected HashMap<DateTime, Integer> backgroundForDateTimeMap = new HashMap<DateTime, Integer>();
-	// Ä³Ò»Ê±¼äÎÄ×ÖÑÕÉ«
+	// æŸä¸€æ—¶é—´æ–‡å­—é¢œè‰²
 	protected HashMap<DateTime, Integer> textColorForDateTimeMap = new HashMap<DateTime, Integer>();;
-	// °üº¬4Ò³£¬ÓÃÓÚÖØÓÃ
+	// åŒ…å«4é¡µï¼Œç”¨äºé‡ç”¨
 	protected ArrayList<BaseCalendarGridAdapter> datePagerAdapters = new ArrayList<BaseCalendarGridAdapter>();
 
-	// µ¼º½ÌØĞ§
-	protected boolean enableSwipe = true;// ÊÇ·ñÔÊĞí»¬¶¯ÇĞ»»
-	protected boolean showNavigationArrows = true;// ÊÇ·ñÏÔÊ¾µ¼º½¼ıÍ·
-	protected boolean enableClickOnDisabledDates = false;// ÊÇ·ñÔÊĞíÎŞĞ§Ê±¼äµÄµã»÷Ğ§¹û
+	// å¯¼èˆªç‰¹æ•ˆ
+	protected boolean enableSwipe = true;// æ˜¯å¦å…è®¸æ»‘åŠ¨åˆ‡æ¢
+	protected boolean showNavigationArrows = true;// æ˜¯å¦æ˜¾ç¤ºå¯¼èˆªç®­å¤´
+	protected boolean enableClickOnDisabledDates = false;// æ˜¯å¦å…è®¸æ— æ•ˆæ—¶é—´çš„ç‚¹å‡»æ•ˆæœ
 
-	// -------------------ÊÂ¼ş´¦Àí±äÁ¿----------------------
-	// ÈÕÆÚµÄµã»÷ÊÂ¼ş
+	// -------------------äº‹ä»¶å¤„ç†å˜é‡----------------------
+	// æ—¥æœŸçš„ç‚¹å‡»äº‹ä»¶
 	private OnItemClickListener dateItemClickListener;
 
-	// ÈÕÆÚµÄ³¤°´ÊÂ¼ş
+	// æ—¥æœŸçš„é•¿æŒ‰äº‹ä»¶
 	private OnItemLongClickListener dateItemLongClickListener;
 
-	// ×Ô¶¨ÒåÊÂ¼ş´¦Àí
+	// è‡ªå®šä¹‰äº‹ä»¶å¤„ç†
 	private CalendarListener caldroidListener;
 
 	/**
-	 * ÓÃÓÚÓÃ»§¶¨ÖÆtitle
-	 */
-	public abstract View getContentTitle();
-
-	/**
-	 * ÓÃÓÚ×ÓÀà¶¨ÖÆÏÔÊ¾£¬´´½¨Ò»¸öadapter
+	 * ç”¨äºå­ç±»å®šåˆ¶æ˜¾ç¤ºï¼Œåˆ›å»ºä¸€ä¸ªadapter
 	 */
 	public abstract BaseCalendarGridAdapter getNewDatesGridAdapter(DateTime dateTime);
 
-	// ----------------------------------¿Ø¼ş×´Ì¬¿ØÖÆ------------------------------------
+	// ----------------------------------æ§ä»¶çŠ¶æ€æ§åˆ¶------------------------------------
 	/**
-	 * µÃµ½µ±Ç°±£´æµÄ×´Ì¬£¬ÓÃÓÚ´¦ÀíĞı×ª
+	 * å°†å½“å‰æ§ä»¶çŠ¶æ€ä¿å­˜åˆ°states
+	 * 
+	 * @param outState
+	 * @param key
+	 */
+	public void saveStatesToKey(Bundle outState, String key) {
+		outState.putBundle(key, getSavedStates());
+	}
+
+	/**
+	 * å¾—åˆ°å½“å‰ä¿å­˜çš„çŠ¶æ€ï¼Œç”¨äºå¤„ç†æ—‹è½¬
 	 */
 	public Bundle getSavedStates() {
 		Bundle bundle = new Bundle();
@@ -185,11 +192,11 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		if (minDateTime != null) {
-			bundle.putString(MIN_DATE, minDateTime.format("YYYY-MM-DD"));
+			bundle.putString(MIN_DATE, minDateTime.format(DATE_FORMAT_DEFAULT));
 		}
 
 		if (maxDateTime != null) {
-			bundle.putString(MAX_DATE, maxDateTime.format("YYYY-MM-DD"));
+			bundle.putString(MAX_DATE, maxDateTime.format(DATE_FORMAT_DEFAULT));
 		}
 
 		bundle.putBoolean(SHOW_NAVIGATION_ARROWS, showNavigationArrows);
@@ -201,7 +208,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ×ÓÀàÊµÏÖ£¬Ìí¼Ó×ÓÀàĞèÒªÓÃµ½µÄ×´Ì¬
+	 * å­ç±»å®ç°ï¼Œæ·»åŠ å­ç±»éœ€è¦ç”¨åˆ°çš„çŠ¶æ€
 	 * 
 	 * @param bundle
 	 */
@@ -209,30 +216,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ½«µ±Ç°¿Ø¼ş×´Ì¬±£´æµ½states
-	 * 
-	 * @param outState
-	 * @param key
-	 */
-	public void saveStatesToKey(Bundle outState, String key) {
-		outState.putBundle(key, getSavedStates());
-	}
-
-	/**
-	 * ´Óµ±Ç°×´Ì¬ÖĞ»Ö¸´
-	 * 
-	 * @param savedInstanceState
-	 * @param key
-	 */
-	public void restoreStatesFromKey(Bundle savedInstanceState, String key) {
-		if (savedInstanceState != null && savedInstanceState.containsKey(key)) {
-			Bundle caldroidSavedState = savedInstanceState.getBundle(key);
-			setArguments(caldroidSavedState);
-		}
-	}
-
-	/**
-	 * ÓÃÓÚ¶Ô»°¿òµÄ×´Ì¬»Ö¸´
+	 * ç”¨äºå¯¹è¯æ¡†çš„çŠ¶æ€æ¢å¤
 	 * 
 	 * @param savedInstanceState
 	 * @param key
@@ -247,73 +231,18 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			show(manager, dialogTag);
 		}
 	}
-
+	
 	/**
-	 * µÃµ½µ±Ç°ÏÔÊ¾µÄ
-	 */
-	public int getCurrentVirtualPosition() {
-		int currentPage = vpContent.getCurrentItem();
-		return pageChangeListener.getCurrent(currentPage);
-	}
-
-	/**
-	 * To clear selectedDates. This method does not refresh view, need to
-	 * explicitly call refreshView()
-	 */
-	public void clearSelectedDates() {
-		selectedDates.clear();
-	}
-
-	/**
-	 * Select the dates from fromDate to toDate. By default the background color
-	 * is holo_blue_light, and the text color is black. You can customize the
-	 * background by changing CaldroidFragment.selectedBackgroundDrawable, and
-	 * change the text color CaldroidFragment.selectedTextColor before call this
-	 * method. This method does not refresh view, need to call refreshView()
+	 * ä»stateä¸­æŒ‡å®šçš„keyæ¢å¤
 	 * 
-	 * @param fromDate
-	 * @param toDate
+	 * @param savedInstanceState
+	 * @param key
 	 */
-	public void setSelectedDates(Date fromDate, Date toDate) {
-		// Ensure fromDate is before toDate
-		if (fromDate == null || toDate == null || fromDate.after(toDate)) {
-			return;
+	public void restoreStatesFromKey(Bundle savedInstanceState, String key) {
+		if (savedInstanceState != null && savedInstanceState.containsKey(key)) {
+			Bundle caldroidSavedState = savedInstanceState.getBundle(key);
+			setArguments(caldroidSavedState);
 		}
-
-		selectedDates.clear();
-
-		DateTime fromDateTime = CalendarHelper.convertDateToDateTime(fromDate);
-		DateTime toDateTime = CalendarHelper.convertDateToDateTime(toDate);
-
-		DateTime dateTime = fromDateTime;
-		while (dateTime.lt(toDateTime)) {
-			selectedDates.add(dateTime);
-			dateTime = dateTime.plusDays(1);
-		}
-		selectedDates.add(toDateTime);
-	}
-
-	/**
-	 * Convenient method to select dates from String
-	 * 
-	 * @param fromDateString
-	 * @param toDateString
-	 * @param dateFormat
-	 * @throws ParseException
-	 */
-	public void setSelectedDateStrings(String fromDateString, String toDateString, String dateFormat) throws ParseException {
-		Date fromDate = CalendarHelper.getDateFromString(fromDateString, dateFormat);
-		Date toDate = CalendarHelper.getDateFromString(toDateString, dateFormat);
-		setSelectedDates(fromDate, toDate);
-	}
-
-	/**
-	 * Set caldroid listener when user click on a date
-	 * 
-	 * @param caldroidListener
-	 */
-	public void setCaldroidListener(CalendarListener caldroidListener) {
-		this.caldroidListener = caldroidListener;
 	}
 
 	/**
@@ -333,28 +262,28 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ³õÊ¼»¯view
+	 * åˆå§‹åŒ–view
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		retrieveInitialArgs();
 
-		// Ö§³Ö±£´æ×´Ì¬µ½dialogÖĞ
+		// æ”¯æŒä¿å­˜çŠ¶æ€åˆ°dialogä¸­
 		if (getDialog() != null) {
 			setRetainInstance(true);
 		}
 
-		// ³õÊ¼»¯²¼¾Ö
+		// åˆå§‹åŒ–å¸ƒå±€
 		View view = inflater.inflate(R.layout.calendar_view, container, false);
 
-		// ±êÌâ
-		tvTitle = (TextView) view.findViewById(R.id.calendar_month_year_textview);
+		// æ ‡é¢˜
+		tvTitle = (TextView) view.findViewById(R.id.tvTitle);
 
-		// µ¼º½°´Å¥
-		btnArrowLeft = (Button) view.findViewById(R.id.calendar_left_arrow);
-		btnArrowRight = (Button) view.findViewById(R.id.calendar_right_arrow);
+		// å¯¼èˆªæŒ‰é’®
+		btnArrowLeft = (Button) view.findViewById(R.id.btnLeftArrow);
+		btnArrowRight = (Button) view.findViewById(R.id.btnRightArrow);
 
-		// µ¼º½Ìõ×ó°´Å¥
+		// å¯¼èˆªæ¡å·¦æŒ‰é’®
 		btnArrowLeft.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -363,7 +292,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			}
 		});
 
-		// µ¼º½ÌõÓÒ°´Å¥
+		// å¯¼èˆªæ¡å³æŒ‰é’®
 		btnArrowRight.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -371,21 +300,25 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			}
 		});
 
-		// ÊÇ·ñÏÔÊ¾¼ıÍ·
+		// æ˜¯å¦æ˜¾ç¤ºç®­å¤´
 		setShowNavigationArrows(showNavigationArrows);
 
-		// ±êÌâ
-		gvContentTitle = (GridView) view.findViewById(R.id.gvContentTitle);
-		ColumnTitleAdapter weekdaysAdapter = new ColumnTitleAdapter(getActivity(), android.R.layout.simple_list_item_1, getContentTitles());
-		gvContentTitle.setAdapter(weekdaysAdapter);
+		// æ ‡é¢˜
+		gvContentTitle = (GridView) view.findViewById(R.id.gvColumnTitle);
+		ColumnTitleAdapter columnTitleAdapter = getColumnTitleAdapter();
+		if(columnTitleAdapter != null){
+			gvContentTitle.setAdapter(columnTitleAdapter);
+		} else {
+			gvContentTitle.setVisibility(View.GONE);
+		}
 
-		// ÉèÖÃgridviewÖĞµÄËùÓĞView£¬ÕâĞ©View¿ÉÒÔ±»»ØÊÕ
+		// è®¾ç½®gridviewä¸­çš„æ‰€æœ‰Viewï¼Œè¿™äº›Viewå¯ä»¥è¢«å›æ”¶
 		setupDateGridPages(view);
 
-		// Ë¢ĞÂÏÔÊ¾
+		// åˆ·æ–°æ˜¾ç¤º
 		refreshView();
 
-		// Í¨Öª¿Í»§¶Ëview´´½¨³É¹¦£¬¿Í»§¶ËĞèÒªÔÚÕâÀï¶¨ÖÆ°´Å¥ºÍTextView
+		// é€šçŸ¥å®¢æˆ·ç«¯viewåˆ›å»ºæˆåŠŸï¼Œå®¢æˆ·ç«¯éœ€è¦åœ¨è¿™é‡Œå®šåˆ¶æŒ‰é’®å’ŒTextView
 		if (caldroidListener != null) {
 			caldroidListener.onCaldroidViewCreated();
 		}
@@ -393,10 +326,15 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		return view;
 	}
 	
-	public List<String> getContentTitles(){return null;};
+	/**
+	 *  å¾—åˆ°åˆ—æ ‡é¢˜
+	 *  å¦‚æœè¿”å›nullï¼Œåˆ™ä¸æ˜¾ç¤ºæ ‡é¢˜
+	 * @return
+	 */
+	public abstract ColumnTitleAdapter getColumnTitleAdapter();
 
 	/**
-	 * µÃµ½³õÊ¼²ÎÊı£¬Í¨¹ısetArguments·½Ê½µÃµ½µÄÊı¾İ
+	 * å¾—åˆ°åˆå§‹å‚æ•°ï¼Œé€šè¿‡setArgumentsæ–¹å¼å¾—åˆ°çš„æ•°æ®
 	 */
 	protected void retrieveInitialArgs() {
 		Bundle args = getArguments();
@@ -405,148 +343,134 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			week = args.getInt(WEEK, -1);
 			month = args.getInt(MONTH, -1);
 			year = args.getInt(YEAR, -1);
+			//title of dialog
 			dialogTitle = args.getString(DIALOG_TITLE);
+			
 			Dialog dialog = getDialog();
 			if (dialog != null) {
 				if (dialogTitle != null) {
 					dialog.setTitle(dialogTitle);
-				} else {// Èç¹ûÓÃ»§ÒªÇó²»ÏÔÊ¾title
+				} else {// å¦‚æœç”¨æˆ·è¦æ±‚ä¸æ˜¾ç¤ºtitle
 					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				}
 			}
 
-			// ÊÇ·ñÏÔÊ¾¼ıÍ·
+			// æ˜¯å¦æ˜¾ç¤ºç®­å¤´
 			showNavigationArrows = args.getBoolean(SHOW_NAVIGATION_ARROWS, true);
 
-			// ÊÇ·ñÔÊĞí»¬¶¯ÇĞ»»
+			// æ˜¯å¦å…è®¸æ»‘åŠ¨åˆ‡æ¢
 			enableSwipe = args.getBoolean(ENABLE_SWIPE, true);
 
-			// ÊÇ·ñÔÊĞíµã»÷ÎŞĞ§ÈÕÆÚ
+			// æ˜¯å¦å…è®¸ç‚¹å‡»æ— æ•ˆæ—¥æœŸ
 			enableClickOnDisabledDates = args.getBoolean(ENABLE_CLICK_ON_DISABLED_DATES, false);
 
-			// µÃµ½ÎŞĞ§ÈÕÆÚ
+			// å¾—åˆ°æ— æ•ˆæ—¥æœŸ
 			ArrayList<String> disableDateStrings = args.getStringArrayList(DISABLE_DATES);
 			if (disableDateStrings != null && disableDateStrings.size() > 0) {
 				disableDates.clear();
 				for (String dateString : disableDateStrings) {
-					DateTime dt = CalendarHelper.getDateTimeFromString(dateString, "yyyy-MM-dd");
+					DateTime dt = CalendarHelper.getDateTimeFromString(dateString, DATE_FORMAT_DEFAULT);
 					disableDates.add(dt);
 				}
 			}
 
-			// µÃµ½Ñ¡ÖĞÈÕÆÚ
+			// å¾—åˆ°é€‰ä¸­æ—¥æœŸ
 			ArrayList<String> selectedDateStrings = args.getStringArrayList(SELECTED_DATES);
 			if (selectedDateStrings != null && selectedDateStrings.size() > 0) {
 				selectedDates.clear();
 				for (String dateString : selectedDateStrings) {
-					DateTime dt = CalendarHelper.getDateTimeFromString(dateString, "yyyy-MM-dd");
+					DateTime dt = CalendarHelper.getDateTimeFromString(dateString, DATE_FORMAT_DEFAULT);
 					selectedDates.add(dt);
 				}
 			}
 
-			// µÃµ½×îĞ¡ÈÕÆÚ
+			// å¾—åˆ°æœ€å°æ—¥æœŸ
 			String minDateTimeString = args.getString(MIN_DATE);
 			if (minDateTimeString != null) {
 				minDateTime = CalendarHelper.getDateTimeFromString(minDateTimeString, null);
 			}
 
-			// µÃµ½×î´óÈÕÆÚ
+			// å¾—åˆ°æœ€å¤§æ—¥æœŸ
 			String maxDateTimeString = args.getString(MAX_DATE);
 			if (maxDateTimeString != null) {
 				maxDateTime = CalendarHelper.getDateTimeFromString(maxDateTimeString, null);
 			}
 
-			// ´¦Àí×ÓÀàµÄÊı¾İ
+			// å¤„ç†å­ç±»çš„æ•°æ®
 			retrieveChildInitialArgs(args);
 		}
-		if (month == -1 || year == -1) {
+		if (month == -1 || year == -1 || week == -1 || day == -1) {
 			DateTime dateTime = DateTime.today(TimeZone.getDefault());
-			month = dateTime.getMonth();
 			year = dateTime.getYear();
+			month = dateTime.getMonth();
+			week = dateTime.getWeekDay();
+			day = dateTime.getDay();
 		}
 	}
 
 	/**
-	 * ×ÓÀà¸²¸ÇµÄ·½·¨£¬»ñÈ¡×ÓÀàµÄ²ÎÊı
+	 * å­ç±»è¦†ç›–çš„æ–¹æ³•ï¼Œè·å–å­ç±»çš„å‚æ•°
 	 * 
 	 * @param bundle
 	 */
-	public void retrieveChildInitialArgs(Bundle bundle) {
-	}
+	public void retrieveChildInitialArgs(Bundle bundle) {}
+
 
 	/**
-	 * µÃµ½µ±Ç°ÈÕÆÚ
-	 * 
-	 * @return
-	 */
-	public abstract DateTime buildCurrentDateTime();
-
-	/**
-	 * µÃµ½Ò»¸öĞÂÈÕÆÚ£¬¸ù¾İµ±Ç°¶¨ÒåµÄunit£¬unit>0Ôö¼ÓÈÕÆÚ£¬·ñÔò¼õĞ¡ÈÕÆÚ
-	 * 
-	 * @param dateTime
-	 * @return
-	 */
-	public abstract DateTime buildDateTime(DateTime dateTime, int unit);
-
-	/**
-	 * ÉèÖÃ4Ò³°üº¬ÈÕÆÚµÄgridview£¬ÕâĞ©Ò³Ãæ¿ÉÒÔ±»»ØÊÕ
+	 * è®¾ç½®4é¡µåŒ…å«æ—¥æœŸçš„gridviewï¼Œè¿™äº›é¡µé¢å¯ä»¥è¢«å›æ”¶
 	 * 
 	 * @param view
 	 */
 	private void setupDateGridPages(View view) {
-		// µÃµ½µ±Ç°ÈÕÆÚ
+		// å¾—åˆ°å½“å‰æ—¥æœŸ
 		DateTime currentDateTime = buildCurrentDateTime();
 
-		// ÉèÖÃpageChangeListener
+		// è®¾ç½®pageChangeListener
 		pageChangeListener = new DatePageChangeListener();
 		pageChangeListener.setCurrentDateTime(currentDateTime);
 
-		// µ±Ç°ÈÕÆÚ
+		// å½“å‰æ—¥æœŸ
 		BaseCalendarGridAdapter adapter0 = getNewDatesGridAdapter(currentDateTime);
 
-		// ÉèÖÃÊ±¼ä
+		// æ—¶é—´
 		datetimeList = adapter0.getDatetimeList();
 
-		// ÏÂÒ»¸öÈÕÆÚ
+		// ä¸‹ä¸€ä¸ªæ—¥æœŸ
 		DateTime nextDateTime = buildDateTime(currentDateTime, 1);
 		BaseCalendarGridAdapter adapter1 = getNewDatesGridAdapter(nextDateTime);
 
-		// ÏÂÁ½¸öÈÕÆÚ
+		// ä¸‹ä¸¤ä¸ªæ—¥æœŸ
 		DateTime next2DateTime = buildDateTime(nextDateTime, 1);
 		BaseCalendarGridAdapter adapter2 = getNewDatesGridAdapter(next2DateTime);
 
-		// Ç°Ò»¸öÈÕÆÚ
+		// å‰ä¸€ä¸ªæ—¥æœŸ
 		DateTime prevDateTime = buildDateTime(currentDateTime, -1);
 		BaseCalendarGridAdapter adapter3 = getNewDatesGridAdapter(prevDateTime);
 
-		// Ìí¼ÓËùÓĞadapter
+		// æ·»åŠ æ‰€æœ‰adapter
 		datePagerAdapters.add(adapter0);
 		datePagerAdapters.add(adapter1);
 		datePagerAdapters.add(adapter2);
 		datePagerAdapters.add(adapter3);
 
-		// ÉèÖÃadapterµ½Listener£¬µ±Ò³Ãæ¸Ä±äµÄÊ±ºòË¢ĞÂadapter
+		// è®¾ç½®adapteråˆ°Listenerï¼Œå½“é¡µé¢æ”¹å˜çš„æ—¶å€™åˆ·æ–°adapter
 		pageChangeListener.setCaldroidGridAdapters(datePagerAdapters);
 
-		// ÉèÖÃÎŞÏŞ»¬¶¯µÄviewpagerºÍpageradapter£¬ÓÃÓÚÖØÓÃfragemnts
+		// è®¾ç½®æ— é™æ»‘åŠ¨çš„viewpagerå’Œpageradapterï¼Œç”¨äºé‡ç”¨fragemnts
 		vpContent = (InfiniteViewPager) view.findViewById(R.id.vpContent);
 
-		// ÊÇ·ñÔÊĞí»¬¶¯
+		// æ˜¯å¦å…è®¸æ»‘åŠ¨
 		vpContent.setEnabled(enableSwipe);
 
-		// Set the numberOfDaysInMonth to dateViewPager so it can calculate the
-		// height correctly
-		vpContent.setDatesInMonth(datetimeList);
+		//set dates in list, useful for calculate height of content
+		vpContent.setDatetimeList(datetimeList);
 
-		setupChildDateGridPages();
-
-		// MonthPagerAdapter actually provides 4 real fragments. The
-		// InfinitePagerAdapter only recycles fragment provided by this
-		// MonthPagerAdapter
+		setupChildDateGridPages(vpContent);
+		
+		//å†…å®¹
 		final ContentPagerAdapter pagerAdapter = new ContentPagerAdapter(getChildFragmentManager());
 
-		// ÔÚview»æÖÆÖ®Ç°£¬¸øfragmentÉèÖÃ³õÊ¼Êı¾İ
+		// åœ¨viewç»˜åˆ¶ä¹‹å‰ï¼Œç»™fragmentè®¾ç½®åˆå§‹æ•°æ®
 		fragments = pagerAdapter.getFragments();
 		for (int i = 0; i < NUMBER_OF_PAGES; i++) {
 			DateGridFragment dateGridFragment = fragments.get(i);
@@ -554,23 +478,45 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			dateGridFragment.setGridAdapter(adapter);
 			dateGridFragment.setOnItemClickListener(getDateItemClickListener());
 			dateGridFragment.setOnItemLongClickListener(getDateItemLongClickListener());
+			//å­ç±»çš„dateGridAdapter
+			setupChildDateGridFragment(dateGridFragment);
 		}
 
-		// ÉèÖÃInfinitePagerAdapterÎ§ÈÆBaseGridPagerAdapter»¬¶¯
+		// è®¾ç½®InfinitePagerAdapterå›´ç»•BaseGridPagerAdapteræ»‘åŠ¨
 		InfinitePagerAdapter infinitePagerAdapter = new InfinitePagerAdapter(pagerAdapter);
 
-		// Ê¹ÓÃinfinitePagerAdapterÀ´ÎªdateViewPagerÌá¹©Êı¾İ
+		// ä½¿ç”¨infinitePagerAdapteræ¥ä¸ºdateViewPageræä¾›æ•°æ®
 		vpContent.setAdapter(infinitePagerAdapter);
 
-		// ÉèÖÃ pageChangeListener
+		// è®¾ç½® pageChangeListener
 		vpContent.setOnPageChangeListener(pageChangeListener);
 	}
+	
+	/**
+	 * å¾—åˆ°å½“å‰æ—¥æœŸ
+	 * 
+	 * @return
+	 */
+	public abstract DateTime buildCurrentDateTime();
 
 	/**
-	 * ÉèÖÃ×ÓÀàµÄpageÊı¾İ
+	 * å¾—åˆ°ä¸€ä¸ªæ–°æ—¥æœŸï¼Œæ ¹æ®å½“å‰å®šä¹‰çš„unitï¼Œunit>0å¢åŠ æ—¥æœŸï¼Œå¦åˆ™å‡å°æ—¥æœŸ
+	 * 
+	 * @param dateTime
+	 * @return
 	 */
-	public void setupChildDateGridPages() {
+	public abstract DateTime buildDateTime(DateTime dateTime, int unit);
+
+	/**
+	 * è®¾ç½®å­ç±»çš„pageæ•°æ®
+	 */
+	public void setupChildDateGridPages(InfiniteViewPager vpContent) {
 	}
+	
+	/**
+	 * è®¾ç½®å­ç±»çš„date grid fragment
+	 */
+	public void setupChildDateGridFragment(DateGridFragment dateGridFragment){}
 
 	@Override
 	public void onDetach() {
@@ -587,38 +533,35 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 	}
 
-	// ------------------------·â×°·½·¨----------------------------
+	// ------------------------å°è£…æ–¹æ³•----------------------------
 	/**
-	 * µ±²ÎÊı±ä»¯µÄÊ±ºòË¢ĞÂÊÓÍ¼£¬µ÷ÓÃµÄÊ±ºòĞèÒªÏß¸Ä±ä²ÎÊı£¬ºóµ÷ÓÃ
+	 * å½“å‚æ•°å˜åŒ–çš„æ—¶å€™åˆ·æ–°è§†å›¾ï¼Œè°ƒç”¨çš„æ—¶å€™éœ€è¦çº¿æ”¹å˜å‚æ•°ï¼Œåè°ƒç”¨
 	 */
 	public void refreshView() {
-		if (month == -1 || year == -1) {
-			return;
-		}
 
 		refreshTitle();
 
-		// Ë¢ĞÂDateGrid
+		// åˆ·æ–°DateGrid
 		for (BaseCalendarGridAdapter adapter : datePagerAdapters) {
-			// ÖØÖÃÄÚ²¿Êı¾İ
+			// é‡ç½®å†…éƒ¨æ•°æ®
 			adapter.setCaldroidData(getCaldroidData());
 
-			// ÖØÖÃ¶îÍâÊı¾İ
+			// é‡ç½®é¢å¤–æ•°æ®
 			adapter.setExtraData(extraData);
 
-			// Ë¢ĞÂView
+			// åˆ·æ–°View
 			adapter.notifyDataSetChanged();
 		}
 	}
 
 	/**
-	 * µ±ÓÃ»§»¬¶¯µÄÊ±ºò¸Ä±äTitle
+	 * å½“ç”¨æˆ·æ»‘åŠ¨çš„æ—¶å€™æ”¹å˜Title
 	 */
 	protected void refreshTitle() {
 	}
 
 	/**
-	 * ÉèÖÃÈÕÀúµÄÈÕÆÚ
+	 * è®¾ç½®æ—¥å†çš„æ—¥æœŸ
 	 * 
 	 * @param date
 	 */
@@ -627,24 +570,26 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÉèÖÃÈÕÀúµÄÊ±¼ä
+	 * è®¾ç½®æ—¥å†çš„æ—¶é—´
 	 * 
 	 * @param dateTime
 	 */
 	public void setCalendarDateTime(DateTime dateTime) {
 		month = dateTime.getMonth();
 		year = dateTime.getYear();
+		week = dateTime.getWeekDay();
+		day = dateTime.getDay();
 
 		// Notify listener
 		if (caldroidListener != null) {
-			caldroidListener.onChangeMonth(month, year);
+			caldroidListener.onChangeDateTime(month, year, week, day);
 		}
 
 		refreshView();
 	}
 
 	/**
-	 * »¬¶¯µ½Ö¸¶¨µÄÈÕÆÚ
+	 * æ»‘åŠ¨åˆ°æŒ‡å®šçš„æ—¥æœŸ
 	 * 
 	 * @param date
 	 */
@@ -653,21 +598,21 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * µÃµ½¸Ãµ¥Î»ÏÂµÄµÚÒ»¸öÊ±¼ä
+	 * å¾—åˆ°è¯¥å•ä½ä¸‹çš„ç¬¬ä¸€ä¸ªæ—¶é—´
 	 * 
 	 * @return
 	 */
 	protected abstract DateTime getFirstDateTime(DateTime datetime);
 
 	/**
-	 * µÃµ½¸Ãµ¥Î»ÏÂµÄ×îºóÒ»¸öÊ±¼ä
+	 * å¾—åˆ°è¯¥å•ä½ä¸‹çš„æœ€åä¸€ä¸ªæ—¶é—´
 	 * 
 	 * @return
 	 */
 	protected abstract DateTime getLastDateTime(DateTime datetime);
 
 	/**
-	 * ÒÆ¶¯µ½Ö¸¶¨ÈÕÆÚ£¬´ø¶¯»­£¬¸ñÊ½
+	 * ç§»åŠ¨åˆ°æŒ‡å®šæ—¥æœŸï¼Œå¸¦åŠ¨ç”»ï¼Œæ ¼å¼
 	 * 
 	 * @param dateTime
 	 */
@@ -679,23 +624,23 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		DateTime newFirstDateTime = getFirstDateTime(datetime);
 		DateTime newLastDateTime = getLastDateTime(datetime);
 
-		// µ±Ä¿±êÊ±¼äĞ¡ÓÚµÚÒ»¸öÊ±¼ä£¬Ïò×ó»¬¶¯
+		// å½“ç›®æ ‡æ—¶é—´å°äºç¬¬ä¸€ä¸ªæ—¶é—´ï¼Œå‘å·¦æ»‘åŠ¨
 		if (datetime.lt(fistDateTime)) {
 
-			// Ë¢ĞÂadapters
+			// åˆ·æ–°adapters
 			pageChangeListener.setCurrentDateTime(newFirstDateTime);
 			int currentItem = vpContent.getCurrentItem();
 			pageChangeListener.refreshAdapters(currentItem);
 
-			// Ïò×ó»¬¶¯
+			// å‘å·¦æ»‘åŠ¨
 			vpContent.setCurrentItem(currentItem - 1);
-		} else if (datetime.gt(lastDateTime)) {// Ä¿±êÊ±¼ä´óÓÚ×îºóÒ»¸öÊ±¼ä£¬ÏòÓÒ»¬¶¯£¬Ê±¼äÔö¼Ó
-			// Ë¢ĞÂadapters
+		} else if (datetime.gt(lastDateTime)) {// ç›®æ ‡æ—¶é—´å¤§äºæœ€åä¸€ä¸ªæ—¶é—´ï¼Œå‘å³æ»‘åŠ¨ï¼Œæ—¶é—´å¢åŠ 
+			// åˆ·æ–°adapters
 			pageChangeListener.setCurrentDateTime(newLastDateTime);
 			int currentItem = vpContent.getCurrentItem();
 			pageChangeListener.refreshAdapters(currentItem);
 
-			// ÏòÓÒ»¬¶¯
+			// å‘å³æ»‘åŠ¨
 			vpContent.setCurrentItem(currentItem + 1);
 		}
 
@@ -703,7 +648,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 	// -----------------------------listeners---------------------------------
 	/**
-	 * DatePageChangeListener µ±ÓÃ»§»¬¶¯µÄÊ±ºòË¢ĞÂÊı¾İ
+	 * DatePageChangeListener å½“ç”¨æˆ·æ»‘åŠ¨çš„æ—¶å€™åˆ·æ–°æ•°æ®
 	 */
 	public class DatePageChangeListener implements OnPageChangeListener {
 		private int currentPage = InfiniteViewPager.OFFSET;
@@ -711,7 +656,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		private ArrayList<BaseCalendarGridAdapter> caldroidGridAdapters;
 
 		/**
-		 * µÃµ½dateViewPagerµÄµ±Ç°pager
+		 * å¾—åˆ°dateViewPagerçš„å½“å‰pager
 		 * 
 		 * @return
 		 */
@@ -720,7 +665,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		/**
-		 * ÉèÖÃµ±Ç°µÄpage
+		 * è®¾ç½®å½“å‰çš„page
 		 * 
 		 * @param currentPage
 		 */
@@ -729,7 +674,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		/**
-		 * µÃµ½µ±Ç°Ñ¡ÖĞµÄÊ±¼ä
+		 * å¾—åˆ°å½“å‰é€‰ä¸­çš„æ—¶é—´
 		 * 
 		 * @return
 		 */
@@ -738,7 +683,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		/**
-		 * ÉèÖÃµ±Ç°Ê±¼ä
+		 * è®¾ç½®å½“å‰æ—¶é—´
 		 * 
 		 * @param dateTime
 		 */
@@ -748,14 +693,14 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		/**
-		 * ·µ»Ø4¸öAdapter
+		 * è¿”å›4ä¸ªAdapter
 		 */
 		public ArrayList<BaseCalendarGridAdapter> getCaldroidGridAdapters() {
 			return caldroidGridAdapters;
 		}
 
 		/**
-		 * ÉèÖÃadapter
+		 * è®¾ç½®adapter
 		 * 
 		 * @param caldroidGridAdapters
 		 */
@@ -764,7 +709,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		/**
-		 * µÃµ½ÏÔÊ¾µÄÏÂÒ»¸öÎ»ÖÃ
+		 * å¾—åˆ°æ˜¾ç¤ºçš„ä¸‹ä¸€ä¸ªä½ç½®
 		 * 
 		 * @param position
 		 * @return
@@ -774,7 +719,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		/**
-		 * µÃµ½ÏÔÊ¾ÉÏµÄÇ°Ò»¸öÎ»ÖÃ
+		 * å¾—åˆ°æ˜¾ç¤ºä¸Šçš„å‰ä¸€ä¸ªä½ç½®
 		 * 
 		 * @param position
 		 * @return
@@ -784,7 +729,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		/**
-		 * µÃµ½ÏÔÊ¾ÉÏµÄµ±Ç°Î»ÖÃ
+		 * å¾—åˆ°æ˜¾ç¤ºä¸Šçš„å½“å‰ä½ç½®
 		 * 
 		 * @param position
 		 * @return
@@ -802,38 +747,38 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		public void refreshAdapters(int position) {
-			// µÃµ½ËùÓĞÒªË¢ĞÂµÄadapter
+			// å¾—åˆ°æ‰€æœ‰è¦åˆ·æ–°çš„adapter
 			BaseCalendarGridAdapter currentAdapter = caldroidGridAdapters.get(getCurrent(position));
 			BaseCalendarGridAdapter prevAdapter = caldroidGridAdapters.get(getPrevious(position));
 			BaseCalendarGridAdapter nextAdapter = caldroidGridAdapters.get(getNext(position));
 
 			if (position == currentPage) {
-				// Ë¢ĞÂµ±Ç°Adapter
+				// åˆ·æ–°å½“å‰Adapter
 
 				currentAdapter.setAdapterDateTime(currentDateTime);
 				currentAdapter.notifyDataSetChanged();
 
-				// Ë¢ĞÂÇ°Ò»¸öAdapter
-				prevAdapter.setAdapterDateTime(currentDateTime.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
+				// åˆ·æ–°å‰ä¸€ä¸ªAdapter
+				prevAdapter.setAdapterDateTime(buildDateTime(currentDateTime, -1));
 				prevAdapter.notifyDataSetChanged();
 
-				// Ë¢ĞÂÏÂÒ»¸öAdapter
-				nextAdapter.setAdapterDateTime(currentDateTime.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
+				// åˆ·æ–°ä¸‹ä¸€ä¸ªAdapter
+				nextAdapter.setAdapterDateTime(buildDateTime(currentDateTime, 1));
 				nextAdapter.notifyDataSetChanged();
-			} else if (position > currentPage) {// ÏòÓÒ»¬¶¯
+			} else if (position > currentPage) {// å‘å³æ»‘åŠ¨
 				// Update current date time to next month
-				currentDateTime = currentDateTime.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+				currentDateTime = buildDateTime(currentDateTime, 1);
 
 				// Refresh the adapter of next gridview
-				nextAdapter.setAdapterDateTime(currentDateTime.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
+				nextAdapter.setAdapterDateTime(buildDateTime(currentDateTime, 1));
 				nextAdapter.notifyDataSetChanged();
 
-			} else {// Ïò×ó»¬¶¯
+			} else {// å‘å·¦æ»‘åŠ¨
 				// Update current date time to previous month
-				currentDateTime = currentDateTime.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+				currentDateTime = buildDateTime(currentDateTime, -1);
 
 				// Refresh the adapter of previous gridview
-				prevAdapter.setAdapterDateTime(currentDateTime.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
+				prevAdapter.setAdapterDateTime(buildDateTime(currentDateTime, -1));
 				prevAdapter.notifyDataSetChanged();
 			}
 
@@ -842,7 +787,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 
 		/**
-		 * Ë¢ĞÂfragments
+		 * åˆ·æ–°fragments
 		 */
 		@Override
 		public void onPageSelected(int position) {
@@ -851,10 +796,10 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			// Update current date time of the selected page
 			setCalendarDateTime(currentDateTime);
 
-			// Ë¢ĞÂËùÓĞµ±Ç°ÇøÓòµÄÊ±¼ä
+			// åˆ·æ–°æ‰€æœ‰å½“å‰åŒºåŸŸçš„æ—¶é—´
 			BaseCalendarGridAdapter currentAdapter = caldroidGridAdapters.get(position % BaseCalendarFragment.NUMBER_OF_PAGES);
 
-			// Ë¢ĞÂListÖĞµÄÊ±¼ä
+			// åˆ·æ–°Listä¸­çš„æ—¶é—´
 			datetimeList.clear();
 			datetimeList.addAll(currentAdapter.getDatetimeList());
 		}
@@ -862,7 +807,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * µã»÷Ğ§¹û£¨ÔÚ·ÇÎŞĞ§×´Ì¬£¬²¢ÇÒÔÚ×îĞ¡/×î´óÊ±¼äÇøÓòÄÚ
+	 * ç‚¹å‡»æ•ˆæœï¼ˆåœ¨éæ— æ•ˆçŠ¶æ€ï¼Œå¹¶ä¸”åœ¨æœ€å°/æœ€å¤§æ—¶é—´åŒºåŸŸå†…
 	 * 
 	 * @return
 	 */
@@ -892,7 +837,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ³¤°´µã»÷Ğ§¹û£¨ÔÚ·ÇÎŞĞ§×´Ì¬£¬²¢ÇÒÔÚ×îĞ¡/×î´óÊ±¼äÇøÓòÄÚ
+	 * é•¿æŒ‰ç‚¹å‡»æ•ˆæœï¼ˆåœ¨éæ— æ•ˆçŠ¶æ€ï¼Œå¹¶ä¸”åœ¨æœ€å°/æœ€å¤§æ—¶é—´åŒºåŸŸå†…
 	 * 
 	 * @return
 	 */
@@ -924,21 +869,21 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 	// ----------------------------getters and setters------------------------
 	/**
-	 * µÃµ½ËùÓĞµÄ fragments
+	 * å¾—åˆ°æ‰€æœ‰çš„ fragments
 	 */
 	public ArrayList<DateGridFragment> getFragments() {
 		return fragments;
 	}
 
 	/**
-	 * µÃµ½×ó±ß°´Å¥
+	 * å¾—åˆ°å·¦è¾¹æŒ‰é’®
 	 */
 	public Button getLeftArrowButton() {
 		return btnArrowLeft;
 	}
 
 	/**
-	 * µÃµ½ÓÒ±ß°´Å¥
+	 * å¾—åˆ°å³è¾¹æŒ‰é’®
 	 * 
 	 * @return
 	 */
@@ -947,14 +892,14 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * µÃµ½titleÎÄ×Ö
+	 * å¾—åˆ°titleæ–‡å­—
 	 */
 	public TextView getTitleTextView() {
 		return tvTitle;
 	}
 
 	/**
-	 * ÉèÖÃtitleµÄÎÄ×Ö
+	 * è®¾ç½®titleçš„æ–‡å­—
 	 * 
 	 * @param titleView
 	 */
@@ -963,7 +908,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÄÚ²¿ÓÃµ½µÄÊı¾İ
+	 * å†…éƒ¨ç”¨åˆ°çš„æ•°æ®
 	 * 
 	 * @return
 	 */
@@ -984,13 +929,13 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * µÃµ½×ÓÀàµÄÊı¾İ
+	 * å¾—åˆ°å­ç±»çš„æ•°æ®
 	 */
 	public void getChildCaldroidData() {
 	}
 
 	/**
-	 * µÃµ½grid viewµÄadapter£¬ÓÃÓÚÉèÖÃ×Ô¶¨ÒåÊı¾İ£¬ÒÔ¼°Ë¢ĞÂgridviewµÄÊı¾İ
+	 * å¾—åˆ°grid viewçš„adapterï¼Œç”¨äºè®¾ç½®è‡ªå®šä¹‰æ•°æ®ï¼Œä»¥åŠåˆ·æ–°gridviewçš„æ•°æ®
 	 * 
 	 * @return
 	 */
@@ -1062,31 +1007,31 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		textColorForDateTimeMap.put(dateTime, Integer.valueOf(textColorRes));
 	}
 
-	// -------------------------¹¤¾ß·½·¨-----------------------------------
+	// -------------------------å·¥å…·æ–¹æ³•-----------------------------------
 	/**
-	 * Ç°Ò»¸öÈÕÆÚ
+	 * å‰ä¸€ä¸ªæ—¥æœŸ
 	 */
 	public void prev() {
 		vpContent.setCurrentItem(pageChangeListener.getCurrentPage() - 1);
 	}
 
 	/**
-	 * ÏÂÒ»¸öÈÕÆÚ
+	 * ä¸‹ä¸€ä¸ªæ—¥æœŸ
 	 */
 	public void next() {
 		vpContent.setCurrentItem(pageChangeListener.getCurrentPage() + 1);
 	}
 
-	// ---------Ê§Ğ§×´Ì¬
+	// ---------å¤±æ•ˆçŠ¶æ€
 	/**
-	 * Çå¿Õdisable×´Ì¬£¬×¢Òâ¸Ã·½·¨²¢²»»á×Ô¶¯Ë¢ĞÂview£¬ĞèÒªÊÖ¶¯µ÷ÓÃrefreshView()
+	 * æ¸…ç©ºdisableçŠ¶æ€ï¼Œæ³¨æ„è¯¥æ–¹æ³•å¹¶ä¸ä¼šè‡ªåŠ¨åˆ·æ–°viewï¼Œéœ€è¦æ‰‹åŠ¨è°ƒç”¨refreshView()
 	 */
 	public void clearDisableDates() {
 		disableDates.clear();
 	}
 
 	/**
-	 * ÉèÖÃµ±Ç°²»¿ÉÓÃµÄÈÕÆÚ
+	 * è®¾ç½®å½“å‰ä¸å¯ç”¨çš„æ—¥æœŸ
 	 * 
 	 * @param disableDateList
 	 */
@@ -1103,7 +1048,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÒÔ×Ö·û´®¸ñÊ½ÉèÖÃ²»¿ÉÓÃÈÕÆÚ£¬Ä¬ÈÏÈÕÆÚ¸ñÊ½ yyyy-MM-dd. Èç£º2013-12-24
+	 * ä»¥å­—ç¬¦ä¸²æ ¼å¼è®¾ç½®ä¸å¯ç”¨æ—¥æœŸï¼Œé»˜è®¤æ—¥æœŸæ ¼å¼ yyyy-MM-dd. å¦‚ï¼š2013-12-24
 	 * 
 	 * @param disableDateStrings
 	 */
@@ -1112,8 +1057,8 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÓÃÒ»´®×Ö·û´®Êı×éÉèÖÃÊ§Ğ§Ê±¼ä£¬×¢ÒâÊ±¼ä¸ñÊ½£ºÀıÈç 06-Jan-2013, Ê¹ÓÃ¸ñÊ½ dd-MMM-yyyy¡£
-	 * ¸Ã·½·¨»á×Ô¶¯Ë¢ĞÂÏÔÊ¾£¬²»ĞèÒªÊÖ¶¯µ÷ÓÃrefreshView
+	 * ç”¨ä¸€ä¸²å­—ç¬¦ä¸²æ•°ç»„è®¾ç½®å¤±æ•ˆæ—¶é—´ï¼Œæ³¨æ„æ—¶é—´æ ¼å¼ï¼šä¾‹å¦‚ 06-Jan-2013, ä½¿ç”¨æ ¼å¼ dd-MMM-yyyyã€‚
+	 * è¯¥æ–¹æ³•ä¼šè‡ªåŠ¨åˆ·æ–°æ˜¾ç¤ºï¼Œä¸éœ€è¦æ‰‹åŠ¨è°ƒç”¨refreshView
 	 * 
 	 * @param disableDateStrings
 	 * @param dateFormat
@@ -1130,22 +1075,80 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 	}
 
-	// -------------Ñ¡ÖĞ×´Ì¬
+	// -------------é€‰ä¸­çŠ¶æ€
+	/**
+	 * é€‰ä¸­ä»fromDateåˆ°toDateæŒ‡å®šåˆ°æ—¶é—´ï¼Œé»˜è®¤èƒŒæ™¯è‰²ä¸ºholo_blue_lightï¼Œå¹¶ä¸”æ–‡å­—é¢œè‰²ä¸ºbackï¼Œå¯ä»¥é€šè¿‡CaldroidFragment.selectedBackgroundDrawableå’Œ
+	 * CaldroidFragment.selectedTextColoræ¥è®¾ç½®èƒŒæ™¯è‰²å’Œæ–‡å­—é¢œè‰²ï¼Œè¯¥æ–¹æ³•å¹¶ä¸åˆ·æ–°è§†å›¾ï¼Œéœ€è¦æ‰‹å·¥è°ƒç”¨refreshView
+	 * @param fromDate
+	 * @param toDate
+	 */
+	public void setSelectedDates(Date fromDate, Date toDate) {
+		// Ensure fromDate is before toDate
+		if (fromDate == null || toDate == null || fromDate.after(toDate)) {
+			return;
+		}
+
+		selectedDates.clear();
+
+		DateTime fromDateTime = CalendarHelper.convertDateToDateTime(fromDate);
+		DateTime toDateTime = CalendarHelper.convertDateToDateTime(toDate);
+
+		DateTime dateTime = fromDateTime;
+		while (dateTime.lt(toDateTime)) {
+			selectedDates.add(dateTime);
+			dateTime = dateTime.plusDays(1);
+		}
+		selectedDates.add(toDateTime);
+	}
+	
+	/**
+	 * æ¸…ç©ºé€‰ä¸­çš„æ—¶é—´ï¼Œéœ€è¦è°ƒç”¨refreshViewæ¥åˆ·æ–°è§†å›¾
+	 */
+	public void clearSelectedDates() {
+		selectedDates.clear();
+	}
+
+	/**
+	 * å¾—åˆ°å½“å‰æ˜¾ç¤ºçš„
+	 */
+	public int getCurrentVirtualPosition() {
+		int currentPage = vpContent.getCurrentItem();
+		return pageChangeListener.getCurrent(currentPage);
+	}
+
+
+	/**
+	 * é€‰ä¸­æ—¶é—´ï¼Œæ ¼å¼yyyy-MM-dd
+	 * 
+	 * @param fromDateString
+	 * @param toDateString
+	 * @param dateFormat
+	 * @throws ParseException
+	 */
+	public void setSelectedDateStrings(String fromDateString, String toDateString, String dateFormat) throws ParseException {
+		Date fromDate = CalendarHelper.getDateFromString(fromDateString, dateFormat);
+		Date toDate = CalendarHelper.getDateFromString(toDateString, dateFormat);
+		setSelectedDates(fromDate, toDate);
+	}
 
 	// -------------------------getters and setters-----------------------
+	public void setCaldroidListener(CalendarListener caldroidListener) {
+		this.caldroidListener = caldroidListener;
+	}
+	
 	public CalendarListener getCaldroidListener() {
 		return caldroidListener;
 	}
 
 	/**
-	 * ÊÇ·ñÏÔÊ¾µ¼º½¼ıÍ·
+	 * æ˜¯å¦æ˜¾ç¤ºå¯¼èˆªç®­å¤´
 	 */
 	public boolean isShowNavigationArrows() {
 		return showNavigationArrows;
 	}
 
 	/**
-	 * ÉèÖÃÊÇ·ñÏÔÊ¾µ¼º½¼ıÍ·
+	 * è®¾ç½®æ˜¯å¦æ˜¾ç¤ºå¯¼èˆªç®­å¤´
 	 * 
 	 * @param showNavigationArrows
 	 */
@@ -1161,7 +1164,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÉèÖÃ×îĞ¡Ê±¼ä£¬²»×Ô¶¯Ë¢ĞÂview
+	 * è®¾ç½®æœ€å°æ—¶é—´ï¼Œä¸è‡ªåŠ¨åˆ·æ–°view
 	 * 
 	 * @param minDate
 	 */
@@ -1174,7 +1177,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÓÃ×Ö·û´®ÉèÖÃ×îĞ¡Ê±¼ä£¬¸ñÊ½ yyyy-MM-dd
+	 * ç”¨å­—ç¬¦ä¸²è®¾ç½®æœ€å°æ—¶é—´ï¼Œæ ¼å¼ yyyy-MM-dd
 	 * 
 	 * @param minDateString
 	 * @param dateFormat
@@ -1188,7 +1191,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÉèÖÃ×î´óÊ±¼ä£¬¸Ã·½·¨²»×Ô¶¯Ë¢ĞÂview
+	 * è®¾ç½®æœ€å¤§æ—¶é—´ï¼Œè¯¥æ–¹æ³•ä¸è‡ªåŠ¨åˆ·æ–°view
 	 * 
 	 * @param maxDate
 	 */
@@ -1201,7 +1204,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÉèÖÃ×î´óÊ±¼ä£¬¸ñÊ½ yyyy-MM-dd
+	 * è®¾ç½®æœ€å¤§æ—¶é—´ï¼Œæ ¼å¼ yyyy-MM-dd
 	 * 
 	 * @param maxDateString
 	 * @param dateFormat
@@ -1215,7 +1218,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÊÇ·ñÔÊĞí»¬¶¯
+	 * æ˜¯å¦å…è®¸æ»‘åŠ¨
 	 * 
 	 * @return
 	 */
@@ -1224,7 +1227,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ÉèÖÃÊÇ·ñÔÊĞí»¬¶¯
+	 * è®¾ç½®æ˜¯å¦å…è®¸æ»‘åŠ¨
 	 * 
 	 * @param enableSwipe
 	 */
@@ -1234,7 +1237,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ¿Í»§¶ËµÄ¶îÍâÊı¾İ
+	 * å®¢æˆ·ç«¯çš„é¢å¤–æ•°æ®
 	 * 
 	 * @return
 	 */
@@ -1243,11 +1246,13 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	/**
-	 * ¿Í»§¶ËÔÚ´Ë´¦¿ÉÒÔÉèÖÃ¶îÍâÊı¾İ
+	 * å®¢æˆ·ç«¯åœ¨æ­¤å¤„å¯ä»¥è®¾ç½®é¢å¤–æ•°æ®
 	 * 
 	 * @param extraData
 	 */
 	public void setExtraData(HashMap<String, Object> extraData) {
 		this.extraData = extraData;
 	}
+	
+	
 }

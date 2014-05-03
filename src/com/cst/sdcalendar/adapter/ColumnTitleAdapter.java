@@ -12,7 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * Customize the weekday gridview
+ * 定制Column的Title
  */
 public class ColumnTitleAdapter extends ArrayAdapter<String> {
 	public static int textColor = Color.LTGRAY;

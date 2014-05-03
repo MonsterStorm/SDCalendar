@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * HelperÀà£¬ÓÃÓÚDate£¬JODA DateTimeºÍStringÖ®¼ä×ª»¯
+ * Helperç±»ï¼Œç”¨äºDateï¼ŒJODA DateTimeå’ŒStringä¹‹é—´è½¬åŒ–
  */
 public class CalendarHelper {
 
@@ -19,7 +19,7 @@ public class CalendarHelper {
 	public static SimpleDateFormat MMMFormat = new SimpleDateFormat("MMM", Locale.getDefault());
 
 	/**
-	 * ¸ø¶¨ÈÕÆÚ£¬·µ»Ø¸ÃÈÕÆÚÅÅÂúÔÂÊÓÍ¼ÈÕÆÚ£¬°üº¬Ç°Ò»¸öÔÂ£¬µ±Ç°ÔÂ£¬ÏÂÒ»¸öÔÂµÄÈÕÆÚ
+	 * ç»™å®šæ—¥æœŸï¼Œè¿”å›è¯¥æ—¥æœŸæ’æ»¡æœˆè§†å›¾æ—¥æœŸï¼ŒåŒ…å«å‰ä¸€ä¸ªæœˆï¼Œå½“å‰æœˆï¼Œä¸‹ä¸€ä¸ªæœˆçš„æ—¥æœŸ
 	 * 
 	 * @param month
 	 * @param year
@@ -93,7 +93,53 @@ public class CalendarHelper {
 	}
 
 	/**
-	 * Date×ªDateTime£¬¾«È·µ½Ìì
+	 * å¾—åˆ°æ—¥è§†å›¾çš„æ—¶é—´åˆ—è¡¨
+	 * 
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return
+	 */
+	public static ArrayList<DateTime> getFullTimeForDayView(int year, int month, int day) {
+		ArrayList<DateTime> datetimeList = new ArrayList<DateTime>();
+		DateTime firstTimeOfDay = new DateTime(year, month, day, 0, 0, 0, 0);
+		DateTime lastTimeOfDay = firstTimeOfDay.plus(0, 0, 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+		for (DateTime currentTimeOfDay = firstTimeOfDay; currentTimeOfDay.lt(lastTimeOfDay); ) {
+			datetimeList.add(currentTimeOfDay);//time rule
+			datetimeList.add(currentTimeOfDay);// time
+			currentTimeOfDay = currentTimeOfDay.plus(0, 0, 0, 1, 0, 0, 0, DateTime.DayOverflow.LastDay);;
+		}
+		return datetimeList;
+	}
+	
+	
+	/**
+	 * å¾—åˆ°æ—¥è§†å›¾çš„æ—¶é—´åˆ—è¡¨
+	 * 
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return
+	 */
+	public static ArrayList<DateTime> getFullDaysForWeekView(int year, int month, int day) {
+		ArrayList<DateTime> datetimeList = new ArrayList<DateTime>();
+		
+		DateTime currentTime = new DateTime(year, month, day, 0, 0, 0, 0);
+		
+		int index = currentTime.getWeekIndex();
+		
+		DateTime firstTimeOfWeek = currentTime.minus(0, 0, index, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+		DateTime lastTimeOfWeek = currentTime.plus(0, 0, (7 - index), 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+		for (DateTime currentTimeOfDay = firstTimeOfWeek; currentTimeOfDay.lt(lastTimeOfWeek); ) {
+			datetimeList.add(currentTimeOfDay);//time rule
+			datetimeList.add(currentTimeOfDay);// time
+			currentTimeOfDay = currentTimeOfDay.plus(0, 0, 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);;
+		}
+		return datetimeList;
+	}
+
+	/**
+	 * Dateè½¬DateTimeï¼Œç²¾ç¡®åˆ°å¤©
 	 * 
 	 * @param date
 	 * @return
@@ -107,13 +153,15 @@ public class CalendarHelper {
 		int year = calendar.get(Calendar.YEAR);
 		int javaMonth = calendar.get(Calendar.MONTH);
 		int day = calendar.get(Calendar.DATE);
+		//TODO hour not handle error ?
+//		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
 		// javaMonth start at 0. Need to plus 1 to get datetimeMonth
 		return new DateTime(year, javaMonth + 1, day, 0, 0, 0, 0);
 	}
 
 	/**
-	 * DateTime×ªDate
+	 * DateTimeè½¬Date
 	 * 
 	 * @param dateTime
 	 * @return
@@ -133,7 +181,7 @@ public class CalendarHelper {
 	}
 
 	/**
-	 * String×ªDate£¬Ä¬ÈÏÈÕÆÚ¸ñÊ½yyyy-MM-dd
+	 * Stringè½¬Dateï¼Œé»˜è®¤æ—¥æœŸæ ¼å¼yyyy-MM-dd
 	 * 
 	 * @param dateString
 	 * @param dateFormat
@@ -152,7 +200,7 @@ public class CalendarHelper {
 	}
 
 	/**
-	 * String×ªDateTime,Ä¬ÈÏ¸ñÊ½ yyyy-MM-dd
+	 * Stringè½¬DateTime,é»˜è®¤æ ¼å¼ yyyy-MM-dd
 	 * 
 	 * @param dateString
 	 * @param dateFormat
@@ -171,7 +219,7 @@ public class CalendarHelper {
 	}
 
 	/**
-	 * DateTimeÁĞ±í×ª×Ö·û´®ÁĞ±í
+	 * DateTimeåˆ—è¡¨è½¬å­—ç¬¦ä¸²åˆ—è¡¨
 	 * 
 	 * @param dateTimes
 	 * @return

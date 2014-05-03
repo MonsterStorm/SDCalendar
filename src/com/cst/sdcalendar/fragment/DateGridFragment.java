@@ -9,40 +9,44 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.GridView;
 
+import com.cst.sdcalendar.Mode;
 import com.cst.sdcalendar.R;
 import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
-import com.cst.sdcalendar.adapter.MonthCalendarGridAdapter;
 
 /**
- * DateGridFragment °üº¬Ò»¸ögridView£¬Í¨¹ıinitº¯ÊıÉèÖÃgridViewµÄÁĞÊı£¬¿ÉÒÔÖ¸¶¨ÈÎÒâÊıÄ¿µÄÁĞ£¨ÔÂ7£¬ÖÜ7£¬ÈÕ2£©
- * ÔÚÊ¹ÓÃÖ®Ç°ĞèÒªÔÚFragmentÌí¼Óµ½ÆÁÄ»Ö®Ç°ÉèÖÃadapter£¬onItemClickListener£¬±ÜÃâ±ÀÀ£ÎÊÌâ
+ * DateGridFragment åŒ…å«ä¸€ä¸ªgridViewï¼Œé€šè¿‡initå‡½æ•°è®¾ç½®gridViewçš„åˆ—æ•°ï¼Œå¯ä»¥æŒ‡å®šä»»æ„æ•°ç›®çš„åˆ—ï¼ˆæœˆ7ï¼Œå‘¨7ï¼Œæ—¥2ï¼‰
+ * åœ¨ä½¿ç”¨ä¹‹å‰éœ€è¦åœ¨Fragmentæ·»åŠ åˆ°å±å¹•ä¹‹å‰è®¾ç½®adapterï¼ŒonItemClickListenerï¼Œé¿å…å´©æºƒé—®é¢˜
  */
 public class DateGridFragment extends Fragment {
-	//Ô¤¶¨ÒåÁĞÊı
-	public static final int COLUMN_MONTH = 7;
-	public static final int COLUMN_WEEK = 7;
-	public static final int COLUMN_DAY = 2;
-	
-	private int column;//ÁĞÊıÄ¿
-
+	//å½“å‰æ¨¡å¼
+	private Mode mode;
 	private GridView gridView;
+	private Integer stretchMode;
 	private BaseCalendarGridAdapter gridAdapter;
 	
-	//µã»÷ÊÂ¼ş
+	//ç‚¹å‡»äº‹ä»¶
 	private OnItemClickListener onItemClickListener;
 	private OnItemLongClickListener onItemLongClickListener;
 	
-	public void init(int column){
-		this.column = column;
+	public void setMode(Mode mode) {
+		this.mode = mode;
+	}
+	
+	public void setStretchMode(Integer stretchMode) {
+		this.stretchMode = stretchMode;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		gridView = (GridView) inflater.inflate(R.layout.date_grid_fragment,	container, false);
-		gridView.setNumColumns(column);
+		gridView.setNumColumns(mode.getColumn());
 		
 		if (gridAdapter != null) {
 			gridView.setAdapter(gridAdapter);
+		}
+		
+		if(stretchMode != null){
+			gridView.setStretchMode(stretchMode);
 		}
 
 		if (onItemClickListener != null) {

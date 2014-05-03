@@ -24,7 +24,7 @@ public class InfiniteViewPager extends ViewPager {
 	/**
 	 * datesInMonth is required to calculate the height correctly
 	 */
-	private ArrayList<DateTime> datesInMonth;
+	private ArrayList<DateTime> datetimeList;
 
 	/**
 	 * Enable swipe
@@ -55,12 +55,12 @@ public class InfiniteViewPager extends ViewPager {
 		return sixWeeksInCalendar;
 	}
 
-	public ArrayList<DateTime> getDatesInMonth() {
-		return datesInMonth;
+	public ArrayList<DateTime> getDatetimeList() {
+		return datetimeList;
 	}
-
-	public void setDatesInMonth(ArrayList<DateTime> datesInMonth) {
-		this.datesInMonth = datesInMonth;
+	
+	public void setDatetimeList(ArrayList<DateTime> datetimeList) {
+		this.datetimeList = datetimeList;
 	}
 
 	public void setSixWeeksInCalendar(boolean sixWeeksInCalendar) {
@@ -115,7 +115,7 @@ public class InfiniteViewPager extends ViewPager {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
 		// Calculate row height
-		int rows = datesInMonth.size() / 7;
+		int rows = datetimeList.size() / 7;
 
 		boolean wrapHeight = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST;
 

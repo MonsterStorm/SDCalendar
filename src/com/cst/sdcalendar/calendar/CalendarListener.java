@@ -34,11 +34,11 @@ public abstract class CalendarListener {
 
 	
 	/**
-	 * Inform client that calendar has changed month
+	 * change datetime
 	 * @param month
 	 * @param year
 	 */
-	public void onChangeMonth(int month, int year) {
+	public void onChangeDateTime(int year, int month, int week, int day) {
 		// Do nothing
 	};
 

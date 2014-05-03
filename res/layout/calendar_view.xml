@@ -6,30 +6,30 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:id="@+id/calendar_title_view"
+        android:id="@+id/rltyTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <Button
-            android:id="@+id/calendar_left_arrow"
+            android:id="@+id/btnLeftArrow"
             android:layout_width="50dp"
             android:layout_height="44dp"
             android:layout_alignParentLeft="true"
             android:background="@drawable/left_arrow" />
 
         <TextView
-            android:id="@+id/calendar_month_year_textview"
+            android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:layout_toLeftOf="@+id/calendar_right_arrow"
-            android:layout_toRightOf="@+id/calendar_left_arrow"
+            android:layout_toLeftOf="@+id/btnRightArrow"
+            android:layout_toRightOf="@+id/btnLeftArrow"
             android:gravity="center_horizontal"
             android:textIsSelectable="true"
             android:textSize="22sp" />
 
         <Button
-            android:id="@+id/calendar_right_arrow"
+            android:id="@+id/btnRightArrow"
             android:layout_width="50dp"
             android:layout_height="44dp"
             android:layout_alignParentRight="true"
@@ -37,7 +37,7 @@
     </RelativeLayout>
 
     <GridView
-        android:id="@+id/gvContentTitle"
+        android:id="@+id/gvColumnTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-15dp"

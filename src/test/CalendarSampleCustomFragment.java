@@ -1,15 +1,14 @@
 package test;
 
-import com.cst.sdcalendar.adapter.MonthCalendarGridAdapter;
-import com.cst.sdcalendar.fragment.CalendarFragment;
+import hirondelle.date4j.DateTime;
 
-public class CalendarSampleCustomFragment extends CalendarFragment {
+import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
+import com.cst.sdcalendar.fragment.MonthFragment;
+
+public class CalendarSampleCustomFragment extends MonthFragment {
 
 	@Override
-	public MonthCalendarGridAdapter getNewDatesGridAdapter(int month, int year) {
-		// TODO Auto-generated method stub
+	public BaseCalendarGridAdapter getNewDatesGridAdapter(DateTime datetime) {
 		return new CalendarSampleCustomAdapter(getActivity(), month, year,
-				getCaldroidData(), extraData);
-	}
-
+				getCaldroidData(), extraData);	}
 }
