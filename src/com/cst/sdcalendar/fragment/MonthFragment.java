@@ -123,6 +123,10 @@ public class MonthFragment extends BaseCalendarFragment {
 	 */
 	@Override
 	protected void refreshTitle() {
+		if(tvTitle == null){
+			return;
+		}
+		
 		firstMonthTime.year = year;
 		firstMonthTime.month = month - 1;
 		firstMonthTime.monthDay = 1;

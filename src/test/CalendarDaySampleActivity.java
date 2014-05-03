@@ -1,7 +1,6 @@
 package test;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -10,16 +9,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cst.sdcalendar.R;
 import com.cst.sdcalendar.calendar.OnCalendarChangeListener;
 import com.cst.sdcalendar.fragment.BaseCalendarFragment;
 import com.cst.sdcalendar.fragment.DayFragment;
-import com.cst.sdcalendar.fragment.MonthFragment;
 
 @SuppressLint("SimpleDateFormat")
 public class CalendarDaySampleActivity extends FragmentActivity {
