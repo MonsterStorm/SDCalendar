@@ -32,7 +32,7 @@ public class DayFragment extends BaseCalendarFragment {
 
 	@Override
 	public BaseCalendarGridAdapter getNewDatesGridAdapter(DateTime datetime) {
-		return new DayCalendarGridAdapter(getActivity(),  datetime.getYear(), datetime.getMonth(), datetime.getDay(), getCaldroidData(), extraData);
+		return new DayCalendarGridAdapter(getActivity(), datetime.getYear(), datetime.getMonth(), datetime.getDay(), getCaldroidData(), extraData);
 	}
 
 	@Override
@@ -53,7 +53,6 @@ public class DayFragment extends BaseCalendarFragment {
 	protected DateTime getFirstDateTime(DateTime datetime) {
 		return datetime.getStartOfDay();
 	}
-	
 
 	@Override
 	protected DateTime getLastDateTime(DateTime datetime) {

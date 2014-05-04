@@ -257,7 +257,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 		super.onDestroyView();
 	}
-
+	
 	/**
 	 * 初始化view
 	 */
@@ -514,21 +514,25 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	public void setupChildDateGridFragment(DateGridFragment dateGridFragment) {
 	}
 
-	/*
-	 * @Override
-	 * public void onDetach() {
-	 * super.onDetach();
-	 * try {
-	 * Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-	 * childFragmentManager.setAccessible(true);
-	 * childFragmentManager.set(this, null);
-	 * } catch (NoSuchFieldException e) {
-	 * throw new RuntimeException(e);
-	 * } catch (IllegalAccessException e) {
-	 * throw new RuntimeException(e);
-	 * }
-	 * }
-	 */
+//	@Override
+//	public void onDetach() {
+//		super.onDetach();
+//		try {
+//			Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+//			childFragmentManager.setAccessible(true);
+//			childFragmentManager.set(this, null);
+//		} catch (NoSuchFieldException e) {
+//			throw new RuntimeException(e);
+//		} catch (IllegalAccessException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
+	
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		setCaldroidListener(null);
+	}
 
 	// ------------------------封装方法----------------------------
 	/**
@@ -614,11 +618,11 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	 */
 	public void moveToDateTime(DateTime datetime) {
 		DateTime currentDateTime = buildCurrentDateTime();
-		
-		if(datetime.getYear() == year && datetime.getMonth() == month && datetime.getDay() == day){
+
+		if (datetime.getYear() == year && datetime.getMonth() == month && datetime.getDay() == day) {
 			return;
 		}
-		
+
 		DateTime fistDateTime = getFirstDateTime(currentDateTime);
 		DateTime lastDateTime = getLastDateTime(currentDateTime);
 
@@ -1262,6 +1266,10 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 	public int getDay() {
 		return day;
+	}
+
+	public InfiniteViewPager getVpContent() {
+		return vpContent;
 	}
 
 }
