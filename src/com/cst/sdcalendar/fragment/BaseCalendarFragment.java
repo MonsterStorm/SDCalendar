@@ -302,7 +302,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 
 		// 标题
 		gvContentTitle = (GridView) view.findViewById(R.id.gvColumnTitle);
-		ColumnTitleAdapter columnTitleAdapter = getColumnTitleAdapter();
+		ColumnTitleAdapter columnTitleAdapter = getColumnTitleAdapter(gvContentTitle);
 		if (columnTitleAdapter != null) {
 			gvContentTitle.setAdapter(columnTitleAdapter);
 		} else {
@@ -328,7 +328,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	 * 如果返回null，则不显示标题
 	 * @return
 	 */
-	public abstract ColumnTitleAdapter getColumnTitleAdapter();
+	public abstract ColumnTitleAdapter getColumnTitleAdapter(GridView gvContentTitle);
 
 	/**
 	 * 得到初始参数，通过setArguments方式得到的数据

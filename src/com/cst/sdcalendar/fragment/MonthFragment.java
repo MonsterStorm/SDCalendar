@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.view.View;
+import android.widget.GridView;
 
 import com.cst.sdcalendar.Mode;
 import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
@@ -101,7 +102,8 @@ public class MonthFragment extends BaseCalendarFragment {
 	}
 	
 	@Override
-	public ColumnTitleAdapter getColumnTitleAdapter() {
+	public ColumnTitleAdapter getColumnTitleAdapter(GridView gvContentTitle) {
+		gvContentTitle.setNumColumns(Mode.MONTH.getColumn());
 		return new ColumnTitleAdapter(getActivity(), android.R.layout.simple_list_item_1, getColumnTitles());
 	}
 

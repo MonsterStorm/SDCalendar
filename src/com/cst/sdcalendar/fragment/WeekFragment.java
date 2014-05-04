@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.os.Bundle;
+import android.widget.GridView;
 
 import com.cst.sdcalendar.Mode;
 import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
@@ -79,11 +80,12 @@ public class WeekFragment extends BaseCalendarFragment {
 	@Override
 	protected DateTime getLastDateTime(DateTime datetime) {
 		int index = datetime.getWeekDay();
-		return datetime.plus(0, 0, (7 - index) - 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+		return datetime.plus(0, 0, (7 - index), 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
 	}
 
 	@Override
-	public ColumnTitleAdapter getColumnTitleAdapter() {
+	public ColumnTitleAdapter getColumnTitleAdapter(GridView gvContentTitle) {
+		gvContentTitle.setNumColumns(Mode.WEEK.getColumn());
 		return new ColumnTitleAdapter(getActivity(), android.R.layout.simple_list_item_1, getColumnTitles());
 	}
 

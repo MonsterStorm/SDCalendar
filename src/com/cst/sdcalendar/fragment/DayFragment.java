@@ -61,7 +61,8 @@ public class DayFragment extends BaseCalendarFragment {
 	}
 
 	@Override
-	public ColumnTitleAdapter getColumnTitleAdapter() {
+	public ColumnTitleAdapter getColumnTitleAdapter(GridView gvContentTitle) {
+		gvContentTitle.setNumColumns(Mode.DAY.getColumn());
 		return null;
 	}
 
