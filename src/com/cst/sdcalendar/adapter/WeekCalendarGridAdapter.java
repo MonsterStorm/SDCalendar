@@ -2,7 +2,6 @@ package com.cst.sdcalendar.adapter;
 
 import hirondelle.date4j.DateTime;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -35,10 +34,11 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 	// 起始日为周的第几天
 	protected int startDayOfWeek;
 
-	public WeekCalendarGridAdapter(Context context, int year, int month, int week, HashMap<String, Object> caldroidData, HashMap<String, Object> extraData) {
+	public WeekCalendarGridAdapter(Context context, int year, int month, int day, HashMap<String, Object> caldroidData, HashMap<String, Object> extraData) {
 		super(context, caldroidData, extraData);
 		this.month = month;
 		this.year = year;
+		this.day = day;
 		init();
 	}
 
@@ -72,18 +72,18 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 	 */
 	protected void customizeTextView(int position, TextView cellView) {
 		int type = getItemViewType(position);
+		
+		// Get dateTime of this cell
+		DateTime dateTime = this.datetimeList.get(position);
 
-		if (type == TYPE_RULE) {//时间尺
+		// 取到日
+//		DateTime dateTime = new DateTime(dateInPos.getYear(), dateInPos.getMonth(), dateInPos.getDay(), 0, 0, 0, 0);
 
-		} else {//时间
+		if (type == TYPE_RULE) {// 时间尺
+			cellView.setText(dateTime.getHour() + ":00");
+		} else {// 时间
 
 			cellView.setTextColor(Color.BLACK);
-
-			// Get dateTime of this cell
-			DateTime dateInPos = this.datetimeList.get(position);
-
-			// 取到日
-			DateTime dateTime = new DateTime(dateInPos.getYear(), dateInPos.getMonth(), dateInPos.getDay(), 0, 0, 0, 0);
 
 			// Set color of the dates in previous / next month
 			if (dateTime.getMonth() != month) {
@@ -132,7 +132,7 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 				}
 			}
 
-			cellView.setText("" + dateTime.getDay());
+			cellView.setText("" + dateTime.getWeekDay());
 
 			// Set custom color if required
 			setCustomResources(dateTime, cellView, cellView);
@@ -147,8 +147,8 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 		int type = getItemViewType(position);
 		// For reuse
 		if (convertView == null) {
-			if(type == TYPE_RULE){
-				cellView = (TextView) inflater.inflate(R.layout.date_timerule, null);
+			if (type == TYPE_RULE) {
+				cellView = (TextView) inflater.inflate(R.layout.date_cell, null);
 			} else {
 				cellView = (TextView) inflater.inflate(R.layout.date_cell, null);
 			}

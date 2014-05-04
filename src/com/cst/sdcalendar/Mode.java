@@ -7,7 +7,7 @@ package com.cst.sdcalendar;
  */
 public enum Mode {
 	DAY(2),
-	WEEK(7),
+	WEEK(8),
 	MONTH(7);
 	
 	int column;

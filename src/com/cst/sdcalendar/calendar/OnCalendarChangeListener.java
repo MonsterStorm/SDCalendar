@@ -34,7 +34,7 @@ public interface OnCalendarChangeListener {
 	 * @param month
 	 * @param year
 	 */
-	public void onChangeDateTime(int year, int month, int week, int day);
+	public void onChangeDateTime(int year, int month, int day);
 
 	/**
 	 * Inform client that CaldroidFragment view has been created and views are

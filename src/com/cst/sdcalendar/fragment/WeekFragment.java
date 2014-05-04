@@ -31,7 +31,7 @@ public class WeekFragment extends BaseCalendarFragment {
 
 	@Override
 	public BaseCalendarGridAdapter getNewDatesGridAdapter(DateTime datetime) {
-		return new WeekCalendarGridAdapter(getActivity(), datetime.getYear(), datetime.getMonth(), datetime.getWeekDay(), getCaldroidData(), extraData);
+		return new WeekCalendarGridAdapter(getActivity(), datetime.getYear(), datetime.getMonth(), datetime.getDay(), getCaldroidData(), extraData);
 	}
 
 	@Override
@@ -72,14 +72,14 @@ public class WeekFragment extends BaseCalendarFragment {
 
 	@Override
 	protected DateTime getFirstDateTime(DateTime datetime) {
-		int index = datetime.getWeekIndex();
+		int index = datetime.getWeekDay();
 		return datetime.minus(0, 0, index, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
 	}
 
 	@Override
 	protected DateTime getLastDateTime(DateTime datetime) {
-		int index = datetime.getWeekIndex();
-		return datetime.minus(0, 0, (7 - index), 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+		int index = datetime.getWeekDay();
+		return datetime.plus(0, 0, (7 - index) - 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
 	}
 
 	@Override
@@ -98,7 +98,10 @@ public class WeekFragment extends BaseCalendarFragment {
 	 */
 	@Override
 	protected void refreshTitle() {
-		String title = year + "-" + month + "-" + week;
+		DateTime currentTime = new DateTime(year, month, day, 0, 0, 0, 0);
+		DateTime firstDateTime = getFirstDateTime(currentTime);
+		DateTime lastDateTime = getLastDateTime(currentTime);
+		String title = firstDateTime.getYear() + "-" + firstDateTime.getMonth() + "-" + firstDateTime.getDay() + "~" + lastDateTime.getYear() + "-" + lastDateTime.getMonth() + "-" + lastDateTime.getDay();
 		tvTitle.setText(title);
 	}
 
@@ -110,7 +113,7 @@ public class WeekFragment extends BaseCalendarFragment {
 	 */
 	private ArrayList<String> getColumnTitles() {
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("");// 第一个空白
+		list.add("时间");// 第一个空白
 
 		SimpleDateFormat fmt = new SimpleDateFormat("EEE", Locale.getDefault());
 

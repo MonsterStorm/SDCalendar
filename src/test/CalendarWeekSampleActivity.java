@@ -70,7 +70,6 @@ public class CalendarWeekSampleActivity extends FragmentActivity {
 		else {
 			Bundle args = new Bundle();
 			Calendar cal = Calendar.getInstance();
-			args.putInt(BaseCalendarFragment.WEEK, cal.get(Calendar.WEEK_OF_MONTH));
 			args.putInt(BaseCalendarFragment.DAY, cal.get(Calendar.DAY_OF_MONTH));
 			args.putInt(BaseCalendarFragment.MONTH, cal.get(Calendar.MONTH) + 1);
 			args.putInt(BaseCalendarFragment.YEAR, cal.get(Calendar.YEAR));
@@ -96,8 +95,8 @@ public class CalendarWeekSampleActivity extends FragmentActivity {
 			}
 
 			@Override
-			public void onChangeDateTime(int year, int month, int week, int day) {
-				String text = "month: " + month + " year: " + year + " week: " + week + " day: " + day;
+			public void onChangeDateTime(int year, int month, int day) {
+				String text = "month: " + month + " year: " + year + " day: " + day;
 				Toast.makeText(getApplicationContext(), text,
 						Toast.LENGTH_SHORT).show();
 			}

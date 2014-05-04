@@ -93,7 +93,6 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	 */
 	public final static String DIALOG_TITLE = "dialogTitle";// 标题
 	public final static String DAY = "day";
-	public final static String WEEK = "week";
 	public final static String MONTH = "month";
 	public final static String YEAR = "year";
 	public final static String DISABLE_DATES = "disableDates";// 失效日期
@@ -110,7 +109,6 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	 */
 	protected String dialogTitle;// 对话框标题
 	protected int day = -1;
-	protected int week = -1;
 	protected int month = -1;
 	protected int year = -1;
 	protected ArrayList<DateTime> disableDates = new ArrayList<DateTime>();// 失效时间
@@ -175,7 +173,6 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	public Bundle getSavedStates() {
 		Bundle bundle = new Bundle();
 		bundle.putInt(DAY, day);
-		bundle.putInt(WEEK, week);
 		bundle.putInt(MONTH, month);
 		bundle.putInt(YEAR, year);
 
@@ -340,7 +337,6 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		Bundle args = getArguments();
 		if (args != null) {
 			day = args.getInt(DAY, -1);
-			week = args.getInt(WEEK, -1);
 			month = args.getInt(MONTH, -1);
 			year = args.getInt(YEAR, -1);
 			// title of dialog
@@ -399,11 +395,10 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 			// 处理子类的数据
 			retrieveChildInitialArgs(args);
 		}
-		if (month == -1 || year == -1 || week == -1 || day == -1) {
+		if (month == -1 || year == -1 || day == -1) {
 			DateTime dateTime = DateTime.today(TimeZone.getDefault());
 			year = dateTime.getYear();
 			month = dateTime.getMonth();
-			week = dateTime.getWeekDay();
 			day = dateTime.getDay();
 		}
 	}
@@ -579,12 +574,11 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	public void setCalendarDateTime(DateTime dateTime) {
 		year = dateTime.getYear();
 		month = dateTime.getMonth();
-		week = dateTime.getWeekDay();// 周几，1-7，7为周六
 		day = dateTime.getDay();
 
 		// Notify listener
 		if (caldroidListener != null) {
-			caldroidListener.onChangeDateTime(year, month, week, day);
+			caldroidListener.onChangeDateTime(year, month, day);
 		}
 
 		refreshView();

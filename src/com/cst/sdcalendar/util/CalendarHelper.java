@@ -104,15 +104,15 @@ public class CalendarHelper {
 		ArrayList<DateTime> datetimeList = new ArrayList<DateTime>();
 		DateTime firstTimeOfDay = new DateTime(year, month, day, 0, 0, 0, 0);
 		DateTime lastTimeOfDay = firstTimeOfDay.plus(0, 0, 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
-		for (DateTime currentTimeOfDay = firstTimeOfDay; currentTimeOfDay.lt(lastTimeOfDay); ) {
-			datetimeList.add(currentTimeOfDay);//time rule
+		for (DateTime currentTimeOfDay = firstTimeOfDay; currentTimeOfDay.lt(lastTimeOfDay);) {
+			datetimeList.add(currentTimeOfDay);// time rule
 			datetimeList.add(currentTimeOfDay);// time
-			currentTimeOfDay = currentTimeOfDay.plus(0, 0, 0, 1, 0, 0, 0, DateTime.DayOverflow.LastDay);;
+			currentTimeOfDay = currentTimeOfDay.plus(0, 0, 0, 1, 0, 0, 0, DateTime.DayOverflow.LastDay);
+			;
 		}
 		return datetimeList;
 	}
-	
-	
+
 	/**
 	 * 得到日视图的时间列表
 	 * 
@@ -123,17 +123,25 @@ public class CalendarHelper {
 	 */
 	public static ArrayList<DateTime> getFullDaysForWeekView(int year, int month, int day) {
 		ArrayList<DateTime> datetimeList = new ArrayList<DateTime>();
-		
+
 		DateTime currentTime = new DateTime(year, month, day, 0, 0, 0, 0);
-		
-		int index = currentTime.getWeekIndex();
-		
+
+		int index = currentTime.getWeekDay();
+
 		DateTime firstTimeOfWeek = currentTime.minus(0, 0, index, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
 		DateTime lastTimeOfWeek = currentTime.plus(0, 0, (7 - index), 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
-		for (DateTime currentTimeOfDay = firstTimeOfWeek; currentTimeOfDay.lt(lastTimeOfWeek); ) {
-			datetimeList.add(currentTimeOfDay);//time rule
-			datetimeList.add(currentTimeOfDay);// time
-			currentTimeOfDay = currentTimeOfDay.plus(0, 0, 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);;
+
+		for (int i = 0; i < 24; i++) {// 一天二十四小时
+			DateTime currentTimeOfDay = firstTimeOfWeek;
+			
+			DateTime timeOfDay = currentTimeOfDay.plus(0, 0, 0, i, 0, 0, 0, DateTime.DayOverflow.LastDay);
+
+			datetimeList.add(timeOfDay);// time rule
+			
+			for (;currentTimeOfDay.lt(lastTimeOfWeek);) {
+				datetimeList.add(currentTimeOfDay);// time
+				currentTimeOfDay = currentTimeOfDay.plus(0, 0, 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+			}
 		}
 		return datetimeList;
 	}
@@ -153,8 +161,8 @@ public class CalendarHelper {
 		int year = calendar.get(Calendar.YEAR);
 		int javaMonth = calendar.get(Calendar.MONTH);
 		int day = calendar.get(Calendar.DATE);
-		//TODO hour not handle error ?
-//		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		// TODO hour not handle error ?
+		// int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
 		// javaMonth start at 0. Need to plus 1 to get datetimeMonth
 		return new DateTime(year, javaMonth + 1, day, 0, 0, 0, 0);

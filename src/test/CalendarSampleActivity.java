@@ -104,8 +104,8 @@ public class CalendarSampleActivity extends FragmentActivity {
 			}
 
 			@Override
-			public void onChangeDateTime(int year, int month, int week, int day) {
-				String text = "month: " + month + " year: " + year + " week: " + week + " day: " + day;
+			public void onChangeDateTime(int year, int month, int day) {
+				String text = "month: " + month + " year: " + year + " day: " + day;
 				Toast.makeText(getApplicationContext(), text,
 						Toast.LENGTH_SHORT).show();
 			}
