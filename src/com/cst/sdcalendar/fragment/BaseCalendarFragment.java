@@ -257,12 +257,16 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		}
 		super.onDestroyView();
 	}
-	
+
 	/**
 	 * 初始化view
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		if (container == null) {
+			return null;
+		}
+
 		retrieveInitialArgs();
 
 		// 支持保存状态到dialog中
@@ -463,7 +467,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		setupChildDateGridPages(vpContent);
 
 		// 内容
-		final ContentPagerAdapter pagerAdapter = new ContentPagerAdapter(getFragmentManager());
+		final ContentPagerAdapter pagerAdapter = new ContentPagerAdapter(getActivity().getSupportFragmentManager());
 
 		// 在view绘制之前，给fragment设置初始数据
 		fragments = pagerAdapter.getFragments();
@@ -514,24 +518,27 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	public void setupChildDateGridFragment(DateGridFragment dateGridFragment) {
 	}
 
-//	@Override
-//	public void onDetach() {
-//		super.onDetach();
-//		try {
-//			Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-//			childFragmentManager.setAccessible(true);
-//			childFragmentManager.set(this, null);
-//		} catch (NoSuchFieldException e) {
-//			throw new RuntimeException(e);
-//		} catch (IllegalAccessException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-	
 	@Override
 	public void onDetach() {
 		super.onDetach();
+
 		setCaldroidListener(null);
+
+		if (fragments != null) {// 清空所有fragments，否则会出现fragment重复的bug
+			for (Fragment frag : fragments) {
+				getActivity().getSupportFragmentManager().beginTransaction().remove(frag).commit();
+			}
+		}
+		// 可以用下列方法清空，但是在新版本中不可用
+		// try {
+		// Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+		// childFragmentManager.setAccessible(true);
+		// childFragmentManager.set(this, null);
+		// } catch (NoSuchFieldException e) {
+		// throw new RuntimeException(e);
+		// } catch (IllegalAccessException e) {
+		// throw new RuntimeException(e);
+		// }
 	}
 
 	// ------------------------封装方法----------------------------

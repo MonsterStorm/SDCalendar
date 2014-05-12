@@ -1,11 +1,13 @@
 package com.cst.sdcalendar;
 
+import java.io.Serializable;
+
 /**
  * 日历的模式
  * @author song
  *
  */
-public enum Mode {
+public enum Mode implements Serializable{
 	DAY(2),
 	WEEK(8),
 	MONTH(7);

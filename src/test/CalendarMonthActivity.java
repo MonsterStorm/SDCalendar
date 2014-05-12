@@ -21,7 +21,7 @@ import com.cst.sdcalendar.fragment.BaseCalendarFragment;
 import com.cst.sdcalendar.fragment.MonthFragment;
 
 @SuppressLint("SimpleDateFormat")
-public class CalendarSampleActivity extends FragmentActivity {
+public class CalendarMonthActivity extends FragmentActivity {
 	private boolean undo = false;
 	private BaseCalendarFragment caldroidFragment;
 	private BaseCalendarFragment dialogCaldroidFragment;
