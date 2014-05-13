@@ -2,7 +2,6 @@ package com.cst.sdcalendar.fragment;
 
 import hirondelle.date4j.DateTime;
 
-import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -525,8 +524,12 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 		setCaldroidListener(null);
 
 		if (fragments != null) {// 清空所有fragments，否则会出现fragment重复的bug
-			for (Fragment frag : fragments) {
-				getActivity().getSupportFragmentManager().beginTransaction().remove(frag).commit();
+			try{
+				for (Fragment frag : fragments) {
+					getActivity().getSupportFragmentManager().beginTransaction().remove(frag).commit();
+				}
+			} catch (Exception e){
+				e.printStackTrace();
 			}
 		}
 		// 可以用下列方法清空，但是在新版本中不可用
