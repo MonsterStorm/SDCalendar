@@ -8,7 +8,7 @@ import java.io.Serializable;
  *
  */
 public enum Mode implements Serializable{
-	DAY(2),
+	DAY(8),
 	WEEK(8),
 	MONTH(7);
 	
@@ -20,5 +20,9 @@ public enum Mode implements Serializable{
 	
 	public int getColumn() {
 		return column;
+	}
+	
+	public void setColumn(int column){
+		this.column = column;
 	}
 }

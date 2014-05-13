@@ -14,7 +14,8 @@ import android.widget.TextView;
 
 import com.cst.sdcalendar.Mode;
 import com.cst.sdcalendar.R;
-import com.cst.sdcalendar.fragment.MonthFragment;
+import com.cst.sdcalendar.fragment.DayFragment;
+import com.cst.sdcalendar.fragment.WeekFragment;
 import com.cst.sdcalendar.util.CalendarHelper;
 
 /**
@@ -46,7 +47,7 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 	 * 处理子类参数
 	 */
 	public void populateChildFromCaldroidData() {
-		startDayOfWeek = (Integer) caldroidData.get(MonthFragment.START_DAY_OF_WEEK);
+		startDayOfWeek = (Integer) caldroidData.get(WeekFragment.START_DAY_OF_WEEK);
 		this.datetimeList = CalendarHelper.getFullDaysForWeekView(this.year, this.month, this.day);
 	}
 
@@ -72,23 +73,17 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 	 */
 	protected void customizeTextView(int position, TextView cellView) {
 		int type = getItemViewType(position);
-		
+
 		// Get dateTime of this cell
 		DateTime dateTime = this.datetimeList.get(position);
 
 		// 取到日
-//		DateTime dateTime = new DateTime(dateInPos.getYear(), dateInPos.getMonth(), dateInPos.getDay(), 0, 0, 0, 0);
+		DateTime dayOfDateTime = new DateTime(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay(), 0, 0, 0, 0);
 
 		if (type == TYPE_RULE) {// 时间尺
 			cellView.setText(dateTime.getHour() + ":00");
 		} else {// 时间
-
 			cellView.setTextColor(Color.BLACK);
-
-			// Set color of the dates in previous / next month
-			if (dateTime.getMonth() != month) {
-				cellView.setTextColor(resources.getColor(R.color.caldroid_darker_gray));
-			}
 
 			boolean shouldResetDiabledView = false;
 			boolean shouldResetSelectedView = false;
@@ -96,15 +91,15 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 			// Customize for disabled dates and date outside min/max dates
 			if ((minDateTime != null && dateTime.lt(minDateTime)) || (maxDateTime != null && dateTime.gt(maxDateTime)) || (disableDates != null && disableDatesMap.containsKey(dateTime))) {
 
-				cellView.setTextColor(MonthFragment.disabledTextColor);
-				if (MonthFragment.disabledBackgroundDrawable == -1) {
-					cellView.setBackgroundResource(R.drawable.disable_cell);
+				cellView.setTextColor(WeekFragment.disabledTextColor);
+				if (WeekFragment.disabledBackgroundDrawable == -1) {
+					cellView.setBackgroundResource(R.drawable.cell_disable);
 				} else {
-					cellView.setBackgroundResource(MonthFragment.disabledBackgroundDrawable);
+					cellView.setBackgroundResource(DayFragment.disabledBackgroundDrawable);
 				}
 
-				if (dateTime.equals(getToday())) {
-					cellView.setBackgroundResource(R.drawable.red_border_gray_bg);
+				if (dayOfDateTime.equals(getToday())) {
+					cellView.setBackgroundResource(R.drawable.cell_today);
 				}
 			} else {
 				shouldResetDiabledView = true;
@@ -112,27 +107,27 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 
 			// Customize for selected dates
 			if (selectedDates != null && selectedDatesMap.containsKey(dateTime)) {
-				if (MonthFragment.selectedBackgroundDrawable != -1) {
-					cellView.setBackgroundResource(MonthFragment.selectedBackgroundDrawable);
+				if (WeekFragment.selectedBackgroundDrawable != -1) {
+					cellView.setBackgroundResource(WeekFragment.selectedBackgroundDrawable);
 				} else {
-					cellView.setBackgroundColor(resources.getColor(R.color.caldroid_sky_blue));
+					cellView.setBackgroundResource(R.drawable.cell_selected);
 				}
 
-				cellView.setTextColor(MonthFragment.selectedTextColor);
+				cellView.setTextColor(WeekFragment.selectedTextColor);
 			} else {
 				shouldResetSelectedView = true;
 			}
 
 			if (shouldResetDiabledView && shouldResetSelectedView) {
 				// Customize for today
-				if (dateTime.equals(getToday())) {
-					cellView.setBackgroundResource(R.drawable.red_border);
+				if (dayOfDateTime.equals(getToday())) {
+					cellView.setBackgroundResource(R.drawable.cell_today);
 				} else {
-					cellView.setBackgroundResource(R.drawable.cell_bg);
+					cellView.setBackgroundResource(R.drawable.cell_default);
 				}
 			}
 
-			cellView.setText("" + dateTime.getWeekDay());
+//			cellView.setText("" + dateTime.getMonth() + "-" + dateTime.getDay());
 
 			// Set custom color if required
 			setCustomResources(dateTime, cellView, cellView);
@@ -148,9 +143,9 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 		// For reuse
 		if (convertView == null) {
 			if (type == TYPE_RULE) {
-				cellView = (TextView) inflater.inflate(R.layout.date_cell, null);
+				cellView = (TextView) inflater.inflate(R.layout.date_timerule_week, null);
 			} else {
-				cellView = (TextView) inflater.inflate(R.layout.date_cell, null);
+				cellView = (TextView) inflater.inflate(R.layout.date_cell_week, null);
 			}
 		}
 

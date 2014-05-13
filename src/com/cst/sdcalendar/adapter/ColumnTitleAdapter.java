@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Html;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -51,6 +52,9 @@ public class ColumnTitleAdapter extends ArrayAdapter<String> {
 
 		textView.setTextColor(textColor);
 		textView.setGravity(Gravity.CENTER);
+		
+		textView.setText(Html.fromHtml(item));
+		
 		return textView;
 	}
 

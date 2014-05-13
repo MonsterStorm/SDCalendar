@@ -47,7 +47,6 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 		sixWeeksInCalendar = (Boolean) caldroidData.get(MonthFragment.SIX_WEEKS_IN_CALENDAR);
 		this.datetimeList = CalendarHelper.getFullWeeksForMonthView(this.month, this.year, startDayOfWeek, sixWeeksInCalendar);
 	}
-	
 
 	/**
 	 * 定制Cell的背景和颜色，根据不同的状态
@@ -60,14 +59,9 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 
 		// Get dateTime of this cell
 		DateTime dateInPos = this.datetimeList.get(position);
-		
-		//取到日
-		DateTime dateTime = new DateTime(dateInPos.getYear(), dateInPos.getMonth(), dateInPos.getDay(), 0, 0, 0, 0);
 
-		// Set color of the dates in previous / next month
-		if (dateTime.getMonth() != month) {
-			cellView.setTextColor(resources.getColor(R.color.caldroid_darker_gray));
-		}
+		// 取到日
+		DateTime dateTime = new DateTime(dateInPos.getYear(), dateInPos.getMonth(), dateInPos.getDay(), 0, 0, 0, 0);
 
 		boolean shouldResetDiabledView = false;
 		boolean shouldResetSelectedView = false;
@@ -77,13 +71,13 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 
 			cellView.setTextColor(MonthFragment.disabledTextColor);
 			if (MonthFragment.disabledBackgroundDrawable == -1) {
-				cellView.setBackgroundResource(R.drawable.disable_cell);
+				cellView.setBackgroundResource(R.drawable.cell_disable);
 			} else {
 				cellView.setBackgroundResource(MonthFragment.disabledBackgroundDrawable);
 			}
 
 			if (dateTime.equals(getToday())) {
-				cellView.setBackgroundResource(R.drawable.red_border_gray_bg);
+				cellView.setBackgroundResource(R.drawable.cell_today);
 			}
 		} else {
 			shouldResetDiabledView = true;
@@ -94,7 +88,7 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 			if (MonthFragment.selectedBackgroundDrawable != -1) {
 				cellView.setBackgroundResource(MonthFragment.selectedBackgroundDrawable);
 			} else {
-				cellView.setBackgroundColor(resources.getColor(R.color.caldroid_sky_blue));
+				cellView.setBackgroundResource(R.drawable.cell_selected);
 			}
 
 			cellView.setTextColor(MonthFragment.selectedTextColor);
@@ -105,10 +99,16 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 		if (shouldResetDiabledView && shouldResetSelectedView) {
 			// Customize for today
 			if (dateTime.equals(getToday())) {
-				cellView.setBackgroundResource(R.drawable.red_border);
+				cellView.setBackgroundResource(R.drawable.cell_today);
 			} else {
-				cellView.setBackgroundResource(R.drawable.cell_bg);
+				cellView.setBackgroundResource(R.drawable.cell_default);
 			}
+		}
+
+		// Set color of the dates in previous / next month
+		if (dateTime.getMonth() != month) {
+			cellView.setBackgroundResource(R.drawable.cell_disable);
+			cellView.setTextColor(resources.getColor(R.color.darker_gray));
 		}
 
 		cellView.setText("" + dateTime.getDay());
@@ -124,7 +124,7 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 
 		// For reuse
 		if (convertView == null) {
-			cellView = (TextView) inflater.inflate(R.layout.date_cell, null);
+			cellView = (TextView) inflater.inflate(R.layout.date_cell_month, null);
 		}
 
 		customizeTextView(position, cellView);
@@ -145,5 +145,5 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 		}
 		return today;
 	}
-	
+
 }

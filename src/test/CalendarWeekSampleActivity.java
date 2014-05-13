@@ -41,7 +41,7 @@ public class CalendarWeekSampleActivity extends FragmentActivity {
 		Date greenDate = cal.getTime();
 
 		if (caldroidFragment != null) {
-			caldroidFragment.setBackgroundResourceForDate(R.color.blue,
+			caldroidFragment.setBackgroundResourceForDate(R.color.light_blue,
 					blueDate);
 			caldroidFragment.setBackgroundResourceForDate(R.color.green,
 					greenDate);

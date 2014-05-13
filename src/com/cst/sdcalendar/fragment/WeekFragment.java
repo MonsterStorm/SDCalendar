@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import android.os.Bundle;
 import android.widget.GridView;
+import android.widget.ListAdapter;
 
 import com.cst.sdcalendar.Mode;
 import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
@@ -59,7 +60,8 @@ public class WeekFragment extends BaseCalendarFragment {
 
 	@Override
 	public DateTime buildCurrentDateTime() {
-		return new DateTime(year, month, 1, 0, 0, 0, 0);
+		DateTime datetime = new DateTime(year, month, day, 0, 0, 0, 0);
+		return getFirstDateTime(datetime);
 	}
 
 	@Override
@@ -74,7 +76,7 @@ public class WeekFragment extends BaseCalendarFragment {
 	@Override
 	protected DateTime getFirstDateTime(DateTime datetime) {
 		int index = datetime.getWeekDay();
-		return datetime.minus(0, 0, index, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+		return datetime.minus(0, 0, index - 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
 	}
 
 	@Override
@@ -103,29 +105,43 @@ public class WeekFragment extends BaseCalendarFragment {
 		DateTime currentTime = new DateTime(year, month, day, 0, 0, 0, 0);
 		DateTime firstDateTime = getFirstDateTime(currentTime);
 		DateTime lastDateTime = getLastDateTime(currentTime);
-		String title = firstDateTime.getYear() + "-" + firstDateTime.getMonth() + "-" + firstDateTime.getDay() + "~" + lastDateTime.getYear() + "-" + lastDateTime.getMonth() + "-" + lastDateTime.getDay();
+		String title = firstDateTime.getYear() + "-" + firstDateTime.getMonth() + "-" + firstDateTime.getDay() + " ~ " + lastDateTime.getYear() + "-" + lastDateTime.getMonth() + "-" + lastDateTime.getDay();
 		tvTitle.setText(title);
+		
+		refreshColumnTitles();
+	}
+	
+	/**
+	 * update adapter
+	 */
+	private void refreshColumnTitles(){
+		GridView gv = getGvContentTitle();
+		if(gv != null){
+			ColumnTitleAdapter adapter = getColumnTitleAdapter(gv);
+			gv.setAdapter(adapter);
+		}
 	}
 
 	// --------------------private methods----------------------------
 	/**
 	 * 得到子标题的数据
-	 * 
-	 * @return "SUN, MON, TUE, WED, THU, FRI, SAT"
 	 */
 	private ArrayList<String> getColumnTitles() {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("时间");// 第一个空白
 
 		SimpleDateFormat fmt = new SimpleDateFormat("EEE", Locale.getDefault());
-
-		// 17 Feb 2013 is Sunday
-		DateTime sunday = new DateTime(2013, 2, 17, 0, 0, 0, 0);
-		DateTime nextDay = sunday.plusDays(startDayOfWeek - SUNDAY);
+		SimpleDateFormat fmt2 = new SimpleDateFormat("MM-dd", Locale.getDefault());
+		
+		DateTime currentDateTime = new DateTime(year, month, day, 0, 0, 0, 0);
+		int weekIndex = currentDateTime.getWeekIndex();
+		DateTime sunday = currentDateTime.minusDays(weekIndex - 1);
+		DateTime nextDay = sunday.plusDays(weekIndex - startDayOfWeek);
 
 		for (int i = 0; i < 7; i++) {
 			Date date = CalendarHelper.convertDateTimeToDate(nextDay);
-			list.add(fmt.format(date).toUpperCase());
+//			list.add(fmt.format(date).toUpperCase(Locale.getDefault()));
+			list.add(fmt.format(date).toUpperCase(Locale.getDefault()) + "<br/>" + fmt2.format(date));
 			nextDay = nextDay.plusDays(1);
 		}
 

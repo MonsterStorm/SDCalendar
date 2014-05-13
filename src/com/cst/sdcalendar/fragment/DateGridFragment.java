@@ -18,48 +18,49 @@ import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
  * 在使用之前需要在Fragment添加到屏幕之前设置adapter，onItemClickListener，避免崩溃问题
  */
 public class DateGridFragment extends Fragment {
-	//当前模式
+	// 当前模式
 	private Mode mode;
 	private GridView gridView;
 	private Integer stretchMode;
 	private BaseCalendarGridAdapter gridAdapter;
-	
-	//点击事件
+
+	// 点击事件
 	private OnItemClickListener onItemClickListener;
 	private OnItemLongClickListener onItemLongClickListener;
-	
+
 	public void setMode(Mode mode) {
 		this.mode = mode;
 	}
-	
+
 	public void setStretchMode(Integer stretchMode) {
 		this.stretchMode = stretchMode;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		gridView = (GridView) inflater.inflate(R.layout.date_grid_fragment,	container, false);
+		gridView = (GridView) inflater.inflate(R.layout.date_grid_fragment, container, false);
+
 		gridView.setNumColumns(mode.getColumn());
-		
+
 		if (gridAdapter != null) {
 			gridView.setAdapter(gridAdapter);
 		}
-		
-		if(stretchMode != null){
+
+		if (stretchMode != null) {
 			gridView.setStretchMode(stretchMode);
 		}
 
 		if (onItemClickListener != null) {
 			gridView.setOnItemClickListener(onItemClickListener);
 		}
-		
-		if(onItemLongClickListener != null) {
+
+		if (onItemLongClickListener != null) {
 			gridView.setOnItemLongClickListener(onItemLongClickListener);
 		}
 		return gridView;
 	}
 	
-	//-----------------------------getters and setters-----------------------------
+	// -----------------------------getters and setters-----------------------------
 	public OnItemClickListener getOnItemClickListener() {
 		return onItemClickListener;
 	}
@@ -67,11 +68,11 @@ public class DateGridFragment extends Fragment {
 	public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
 		this.onItemClickListener = onItemClickListener;
 	}
-	
+
 	public OnItemLongClickListener getOnItemLongClickListener() {
 		return onItemLongClickListener;
 	}
-	
+
 	public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
 		this.onItemLongClickListener = onItemLongClickListener;
 	}

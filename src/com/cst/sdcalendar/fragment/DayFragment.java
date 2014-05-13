@@ -1,26 +1,13 @@
 package com.cst.sdcalendar.fragment;
 
 import hirondelle.date4j.DateTime;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Formatter;
-import java.util.Locale;
-
-import android.os.Bundle;
-import android.text.format.DateUtils;
-import android.text.format.Time;
-import android.view.View;
+import android.annotation.SuppressLint;
 import android.widget.GridView;
 
 import com.cst.sdcalendar.Mode;
 import com.cst.sdcalendar.adapter.BaseCalendarGridAdapter;
 import com.cst.sdcalendar.adapter.ColumnTitleAdapter;
 import com.cst.sdcalendar.adapter.DayCalendarGridAdapter;
-import com.cst.sdcalendar.adapter.MonthCalendarGridAdapter;
-import com.cst.sdcalendar.util.CalendarHelper;
-import com.cst.sdcalendar.viewpager.InfiniteViewPager;
 
 /**
  * 月视图
@@ -28,7 +15,20 @@ import com.cst.sdcalendar.viewpager.InfiniteViewPager;
  * @author song
  * 
  */
+@SuppressLint("ValidFragment")
 public class DayFragment extends BaseCalendarFragment {
+	
+	public DayFragment(){}
+	
+	/**
+	 * update column
+	 * @param column
+	 */
+	public DayFragment(int column){
+		if(column >= 2){
+			Mode.DAY.setColumn(column);
+		}
+	}
 
 	@Override
 	public BaseCalendarGridAdapter getNewDatesGridAdapter(DateTime datetime) {

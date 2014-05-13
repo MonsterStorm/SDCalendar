@@ -48,7 +48,7 @@ public class CalendarSampleCustomAdapter extends MonthCalendarGridAdapter {
 
 		// Set color of the dates in previous / next month
 		if (dateTime.getMonth() != month) {
-			tv1.setTextColor(resources.getColor(R.color.caldroid_darker_gray));
+			tv1.setTextColor(resources.getColor(R.color.darker_gray));
 		}
 
 		boolean shouldResetDiabledView = false;
@@ -59,13 +59,13 @@ public class CalendarSampleCustomAdapter extends MonthCalendarGridAdapter {
 
 			tv1.setTextColor(BaseCalendarFragment.disabledTextColor);
 			if (BaseCalendarFragment.disabledBackgroundDrawable == -1) {
-				cellView.setBackgroundResource(R.drawable.disable_cell);
+				cellView.setBackgroundResource(R.drawable.cell_disable);
 			} else {
 				cellView.setBackgroundResource(BaseCalendarFragment.disabledBackgroundDrawable);
 			}
 
 			if (dateTime.equals(getToday())) {
-				cellView.setBackgroundResource(R.drawable.red_border_gray_bg);
+				cellView.setBackgroundResource(R.drawable.cell_today);
 			}
 
 		} else {
@@ -77,7 +77,7 @@ public class CalendarSampleCustomAdapter extends MonthCalendarGridAdapter {
 			if (BaseCalendarFragment.selectedBackgroundDrawable != -1) {
 				cellView.setBackgroundResource(BaseCalendarFragment.selectedBackgroundDrawable);
 			} else {
-				cellView.setBackgroundColor(resources.getColor(R.color.caldroid_sky_blue));
+				cellView.setBackgroundColor(resources.getColor(R.color.sky_blue));
 			}
 
 			tv1.setTextColor(BaseCalendarFragment.selectedTextColor);
@@ -89,9 +89,9 @@ public class CalendarSampleCustomAdapter extends MonthCalendarGridAdapter {
 		if (shouldResetDiabledView && shouldResetSelectedView) {
 			// Customize for today
 			if (dateTime.equals(getToday())) {
-				cellView.setBackgroundResource(R.drawable.red_border);
+				cellView.setBackgroundResource(R.drawable.cell_today);
 			} else {
-				cellView.setBackgroundResource(R.drawable.cell_bg);
+				cellView.setBackgroundResource(R.drawable.cell_default);
 			}
 		}
 

@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import com.cst.sdcalendar.Mode;
+
 /**
  * Helper类，用于Date，JODA DateTime和String之间转化
  */
@@ -100,27 +102,6 @@ public class CalendarHelper {
 	 * @param day
 	 * @return
 	 */
-	public static ArrayList<DateTime> getFullTimeForDayView(int year, int month, int day) {
-		ArrayList<DateTime> datetimeList = new ArrayList<DateTime>();
-		DateTime firstTimeOfDay = new DateTime(year, month, day, 0, 0, 0, 0);
-		DateTime lastTimeOfDay = firstTimeOfDay.plus(0, 0, 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
-		for (DateTime currentTimeOfDay = firstTimeOfDay; currentTimeOfDay.lt(lastTimeOfDay);) {
-			datetimeList.add(currentTimeOfDay);// time rule
-			datetimeList.add(currentTimeOfDay);// time
-			currentTimeOfDay = currentTimeOfDay.plus(0, 0, 0, 1, 0, 0, 0, DateTime.DayOverflow.LastDay);
-			;
-		}
-		return datetimeList;
-	}
-
-	/**
-	 * 得到日视图的时间列表
-	 * 
-	 * @param year
-	 * @param month
-	 * @param day
-	 * @return
-	 */
 	public static ArrayList<DateTime> getFullDaysForWeekView(int year, int month, int day) {
 		ArrayList<DateTime> datetimeList = new ArrayList<DateTime>();
 
@@ -128,8 +109,8 @@ public class CalendarHelper {
 
 		int index = currentTime.getWeekDay();
 
-		DateTime firstTimeOfWeek = currentTime.minus(0, 0, index, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
-		DateTime lastTimeOfWeek = currentTime.plus(0, 0, (7 - index), 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+		DateTime firstTimeOfWeek = currentTime.minus(0, 0, index - 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+		DateTime lastTimeOfWeek = currentTime.plus(0, 0, (7 - index) + 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
 
 		for (int i = 0; i < 24; i++) {// 一天二十四小时
 			DateTime currentTimeOfDay = firstTimeOfWeek;
@@ -142,6 +123,31 @@ public class CalendarHelper {
 				datetimeList.add(currentTimeOfDay);// time
 				currentTimeOfDay = currentTimeOfDay.plus(0, 0, 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
 			}
+		}
+		return datetimeList;
+	}
+	
+	
+
+	/**
+	 * 得到日视图的时间列表
+	 * 
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return
+	 */
+	public static ArrayList<DateTime> getFullTimeForDayView(int year, int month, int day) {
+		ArrayList<DateTime> datetimeList = new ArrayList<DateTime>();
+		DateTime firstTimeOfDay = new DateTime(year, month, day, 0, 0, 0, 0);
+		DateTime lastTimeOfDay = firstTimeOfDay.plus(0, 0, 1, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
+		for (DateTime currentTimeOfDay = firstTimeOfDay; currentTimeOfDay.lt(lastTimeOfDay);) {
+			datetimeList.add(currentTimeOfDay);// time rule
+			for(int i = 1; i < Mode.DAY.getColumn(); i++){
+				datetimeList.add(currentTimeOfDay);// time
+			}
+			currentTimeOfDay = currentTimeOfDay.plus(0, 0, 0, 1, 0, 0, 0, DateTime.DayOverflow.LastDay);
+			;
 		}
 		return datetimeList;
 	}

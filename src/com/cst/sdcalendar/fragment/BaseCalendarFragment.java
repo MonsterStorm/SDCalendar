@@ -333,7 +333,7 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	 * @return
 	 */
 	public abstract ColumnTitleAdapter getColumnTitleAdapter(GridView gvContentTitle);
-
+	
 	/**
 	 * 得到初始参数，通过setArguments方式得到的数据
 	 */
@@ -1141,6 +1141,15 @@ public abstract class BaseCalendarFragment extends DialogFragment {
 	}
 
 	// -------------------------getters and setters-----------------------
+	/**
+	 * get content title
+	 * @return
+	 */
+	public GridView getGvContentTitle() {
+		return gvContentTitle;
+	}
+	
+	
 	public void setCaldroidListener(OnCalendarChangeListener caldroidListener) {
 		this.caldroidListener = caldroidListener;
 	}

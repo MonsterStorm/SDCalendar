@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.cst.sdcalendar.Mode;
 import com.cst.sdcalendar.R;
-import com.cst.sdcalendar.fragment.MonthFragment;
+import com.cst.sdcalendar.fragment.DayFragment;
 import com.cst.sdcalendar.util.CalendarHelper;
 
 /**
@@ -76,10 +76,16 @@ public class DayCalendarGridAdapter extends BaseCalendarGridAdapter {
 		DateTime dateTime = this.datetimeList.get(position);
 		
 		//只取日期
-//		DateTime dateTime = new DateTime(dateInPos.getYear(), dateInPos.getMonth(), dateInPos.getDay(), 0, 0, 0, 0);
+		DateTime dayOfDateTime = new DateTime(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay(), 0, 0, 0, 0);
 
 		if (type == TYPE_RULE) {// time rule
 			cellView.setText(String.valueOf(dateTime.getHour() + ":00"));
+			
+			if (dayOfDateTime.equals(getToday())) {// Customize for today
+				cellView.setBackgroundResource(R.drawable.cell_today);
+			} else {
+				cellView.setBackgroundResource(R.drawable.cell_default);
+			}
 		} else if (type == TYPE_DATE) {// 日期
 
 			cellView.setTextColor(Color.BLACK);
@@ -90,15 +96,11 @@ public class DayCalendarGridAdapter extends BaseCalendarGridAdapter {
 			// Customize for disabled dates and date outside min/max dates
 			if ((minDateTime != null && dateTime.lt(minDateTime)) || (maxDateTime != null && dateTime.gt(maxDateTime)) || (disableDates != null && disableDatesMap.containsKey(dateTime))) {
 
-				cellView.setTextColor(MonthFragment.disabledTextColor);
-				if (MonthFragment.disabledBackgroundDrawable == -1) {
-					cellView.setBackgroundResource(R.drawable.disable_cell);
+				cellView.setTextColor(DayFragment.disabledTextColor);
+				if (DayFragment.disabledBackgroundDrawable == -1) {
+					cellView.setBackgroundResource(R.drawable.cell_disable);
 				} else {
-					cellView.setBackgroundResource(MonthFragment.disabledBackgroundDrawable);
-				}
-
-				if (dateTime.equals(getToday())) {
-					cellView.setBackgroundResource(R.drawable.red_border_gray_bg);
+					cellView.setBackgroundResource(DayFragment.disabledBackgroundDrawable);
 				}
 			} else {
 				shouldResetDiabledView = true;
@@ -106,27 +108,22 @@ public class DayCalendarGridAdapter extends BaseCalendarGridAdapter {
 
 			// Customize for selected dates
 			if (selectedDates != null && selectedDatesMap.containsKey(dateTime)) {
-				if (MonthFragment.selectedBackgroundDrawable != -1) {
-					cellView.setBackgroundResource(MonthFragment.selectedBackgroundDrawable);
+				if (DayFragment.selectedBackgroundDrawable != -1) {
+					cellView.setBackgroundResource(DayFragment.selectedBackgroundDrawable);
 				} else {
-					cellView.setBackgroundColor(resources.getColor(R.color.caldroid_sky_blue));
+					cellView.setBackgroundResource(R.drawable.cell_selected);
 				}
 
-				cellView.setTextColor(MonthFragment.selectedTextColor);
+				cellView.setTextColor(DayFragment.selectedTextColor);
 			} else {
 				shouldResetSelectedView = true;
 			}
 
 			if (shouldResetDiabledView && shouldResetSelectedView) {
-				// Customize for today
-				if (dateTime.equals(getToday())) {
-					cellView.setBackgroundResource(R.drawable.red_border);
-				} else {
-					cellView.setBackgroundResource(R.drawable.cell_bg);
-				}
+				cellView.setBackgroundResource(R.drawable.cell_default);
 			}
 
-			cellView.setText("" + dateTime.getDay());
+//			cellView.setText("" + dateTime.getDay());
 
 			// Set custom color if required
 			setCustomResources(dateTime, cellView, cellView);
@@ -142,7 +139,7 @@ public class DayCalendarGridAdapter extends BaseCalendarGridAdapter {
 		// For reuse
 		if (convertView == null) {
 			if (type == TYPE_RULE) {
-				cellView = (TextView) inflater.inflate(R.layout.date_timerule, null);
+				cellView = (TextView) inflater.inflate(R.layout.date_timerule_day, null);
 			} else if (type == TYPE_DATE) {
 				cellView = (TextView) inflater.inflate(R.layout.date_cell_day, null);
 			}
