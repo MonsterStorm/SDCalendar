@@ -2,7 +2,6 @@ package com.cst.sdcalendar.adapter;
 
 import hirondelle.date4j.DateTime;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -54,14 +53,14 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 	 * @param position
 	 * @param cellView
 	 */
-	protected void customizeTextView(int position, TextView cellView) {
+	protected void customizeTextView(int position, TextView cellView){
 		cellView.setTextColor(Color.BLACK);
 
 		// Get dateTime of this cell
 		DateTime dateInPos = this.datetimeList.get(position);
 
 		// 取到日
-		DateTime dateTime = new DateTime(dateInPos.getYear(), dateInPos.getMonth(), dateInPos.getDay(), 0, 0, 0, 0);
+		DateTime dateTime = CalendarHelper.precisionToDay(dateInPos);
 
 		boolean shouldResetDiabledView = false;
 		boolean shouldResetSelectedView = false;
@@ -138,12 +137,4 @@ public class MonthCalendarGridAdapter extends BaseCalendarGridAdapter {
 		this.year = dateTime.getYear();
 		this.datetimeList = CalendarHelper.getFullWeeksForMonthView(this.month, this.year, startDayOfWeek, sixWeeksInCalendar);
 	}
-
-	protected DateTime getToday() {
-		if (today == null) {
-			today = CalendarHelper.convertDateToDateTime(new Date());
-		}
-		return today;
-	}
-
 }

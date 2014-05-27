@@ -102,6 +102,10 @@ public class WeekFragment extends BaseCalendarFragment {
 	 */
 	@Override
 	protected void refreshTitle() {
+		if(tvTitle == null){
+			return;
+		}
+		
 		DateTime currentTime = new DateTime(year, month, day, 0, 0, 0, 0);
 		DateTime firstDateTime = getFirstDateTime(currentTime);
 		DateTime lastDateTime = getLastDateTime(currentTime);

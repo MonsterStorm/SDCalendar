@@ -17,15 +17,16 @@ import com.cst.sdcalendar.adapter.DayCalendarGridAdapter;
  */
 @SuppressLint("ValidFragment")
 public class DayFragment extends BaseCalendarFragment {
-	
-	public DayFragment(){}
-	
+
+	public DayFragment() {
+	}
+
 	/**
 	 * update column
 	 * @param column
 	 */
-	public DayFragment(int column){
-		if(column >= 2){
+	public DayFragment(int column) {
+		if (column >= 2) {
 			Mode.DAY.setColumn(column);
 		}
 	}
@@ -76,6 +77,10 @@ public class DayFragment extends BaseCalendarFragment {
 	 */
 	@Override
 	protected void refreshTitle() {
+		if(tvTitle == null){
+			return;
+		}
+		
 		String monthTitle = year + "-" + month + "-" + day;
 		tvTitle.setText(monthTitle);
 	}

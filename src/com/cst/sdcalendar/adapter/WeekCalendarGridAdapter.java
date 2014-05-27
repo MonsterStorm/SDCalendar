@@ -30,8 +30,6 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 	protected int year;
 	// 当前周
 	protected int day;
-	// 当前时间
-	protected DateTime today;
 	// 起始日为周的第几天
 	protected int startDayOfWeek;
 
@@ -78,7 +76,7 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 		DateTime dateTime = this.datetimeList.get(position);
 
 		// 取到日
-		DateTime dayOfDateTime = new DateTime(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay(), 0, 0, 0, 0);
+		DateTime dayOfDateTime = CalendarHelper.precisionToDay(dateTime);
 
 		if (type == TYPE_RULE) {// 时间尺
 			cellView.setText(dateTime.getHour() + ":00");
@@ -160,13 +158,6 @@ public class WeekCalendarGridAdapter extends BaseCalendarGridAdapter {
 		this.year = dateTime.getYear();
 		this.day = dateTime.getDay();
 		this.datetimeList = CalendarHelper.getFullDaysForWeekView(this.year, this.month, this.day);
-	}
-
-	protected DateTime getToday() {
-		if (today == null) {
-			today = CalendarHelper.convertDateToDateTime(new Date());
-		}
-		return today;
 	}
 
 }

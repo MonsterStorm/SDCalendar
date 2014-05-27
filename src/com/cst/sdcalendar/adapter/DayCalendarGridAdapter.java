@@ -22,8 +22,8 @@ import com.cst.sdcalendar.util.CalendarHelper;
  */
 public class DayCalendarGridAdapter extends BaseCalendarGridAdapter {
 	// 日期类型
-	private static final int TYPE_RULE = 0;
-	private static final int TYPE_DATE = 1;
+	public static final int TYPE_RULE = 0;
+	public static final int TYPE_DATE = 1;
 	// 当前月份
 	protected int month;
 	// 当前年
@@ -76,7 +76,7 @@ public class DayCalendarGridAdapter extends BaseCalendarGridAdapter {
 		DateTime dateTime = this.datetimeList.get(position);
 		
 		//只取日期
-		DateTime dayOfDateTime = new DateTime(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay(), 0, 0, 0, 0);
+		DateTime dayOfDateTime = CalendarHelper.precisionToDay(dateTime);
 
 		if (type == TYPE_RULE) {// time rule
 			cellView.setText(String.valueOf(dateTime.getHour() + ":00"));
@@ -157,12 +157,4 @@ public class DayCalendarGridAdapter extends BaseCalendarGridAdapter {
 		this.day = dateTime.getDay();
 		this.datetimeList = CalendarHelper.getFullTimeForDayView(this.year, this.month, this.day);
 	}
-
-	protected DateTime getToday() {
-		if (today == null) {
-			today = CalendarHelper.convertDateToDateTime(new Date());
-		}
-		return today;
-	}
-
 }
